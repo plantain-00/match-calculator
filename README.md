@@ -4,3 +4,5 @@
 
 # match-calculator
 A match calculator
+
+This is a tool to calculate the chances of all teams to be in the top N teams of the group matches.
