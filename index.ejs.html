@@ -1,0 +1,63 @@
+<style>
+    * {
+        font-family: "Lucida Grande", Lucida Sans Unicode, Hiragino Sans GB, WenQuanYi Micro Hei, Verdana, Aril, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    #container {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    textarea {
+        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+        width: 90%;
+        height: 400px;
+        margin: 10px auto 10px auto;
+    }
+    
+    table {
+        border-collapse: collapse;
+        display: inline-block;
+        margin: 5px;
+    }
+    
+    button {
+        height: 30px;
+        width: 90%;
+        margin: 10px auto 10px auto;
+    }
+    
+    th,
+    td {
+        text-align: center;
+        border: 1px solid black;
+        width: 200px;
+        height: 30px;
+    }
+    
+    .result {
+        margin: 10px auto 10px auto;
+    }
+</style>
+<div id="container">
+    <textarea v-model="text"></textarea>
+    <button @click="calculate()">Calculate</button>
+    <div class="result">
+        <table v-for="(group, i) in result">
+            <thead>
+                <tr>
+                    <th>group {{i + 1}}</th>
+                    <th>chance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="team in group">
+                    <td>{{team.name}}</td>
+                    <td>{{team.chance}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="<%=indexBundleJs %>"></script>

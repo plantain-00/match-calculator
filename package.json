@@ -1,0 +1,28 @@
+{
+  "name": "match-calculator",
+  "version": "1.0.0",
+  "description": "A match calculator",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && rm -f index.bundle-*.js && webpack && rev-static",
+    "lint": "tslint \"*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plantain-00/match-calculator.git"
+  },
+  "author": "York Yao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plantain-00/match-calculator/issues"
+  },
+  "homepage": "https://github.com/plantain-00/match-calculator#readme",
+  "devDependencies": {
+    "rev-static": "2.1.2",
+    "tslib": "1.6.0",
+    "tslint": "5.0.0",
+    "typescript": "2.2.2",
+    "vue": "2.2.6",
+    "webpack": "2.3.2"
+  }
+}
