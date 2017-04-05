@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/plantain-00/match-calculator#readme",
   "devDependencies": {
+    "@types/json5": "0.0.29",
+    "ajv": "4.11.5",
+    "json5": "0.5.1",
     "rev-static": "2.1.2",
     "tslib": "1.6.0",
     "tslint": "5.0.0",

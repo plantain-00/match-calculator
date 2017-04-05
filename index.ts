@@ -1,4 +1,6 @@
 import * as Vue from "vue";
+import * as JSON5 from "json5";
+import * as Ajv from "ajv";
 
 function calculate(group: Group): Chance[] {
     if (group.top <= 0) {
@@ -19,8 +21,8 @@ function calculate(group: Group): Chance[] {
         let j = i;
         for (const match of group.matches) {
             const possibility = match.possibilities[i % match.possibilities.length];
-            scores.find(s => s.name === match.team1)!.score += possibility.score1;
-            scores.find(s => s.name === match.team2)!.score += possibility.score2;
+            scores.find(s => s.name === match.a)!.score += possibility.a;
+            scores.find(s => s.name === match.b)!.score += possibility.b;
             j = j / match.possibilities.length;
         }
         scores.sort((a, b) => b.score - a.score);
@@ -40,54 +42,127 @@ function calculate(group: Group): Chance[] {
     return chances.map(c => ({ name: c.name, chance: Math.round(100 * c.chance / possibilitiesCount) / 100 }));
 }
 
+const ajv = new Ajv();
+const validate = ajv.compile({
+    type: "array",
+    items: {
+        type: "object",
+        properties: {
+            teams: {
+                type: "array",
+                items: {
+                    type: "string",
+                },
+                uniqueItems: true,
+            },
+            matches: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        a: {
+                            type: "string",
+                        },
+                        b: {
+                            type: "string",
+                        },
+                        possibilities: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    a: {
+                                        type: "integer",
+                                    },
+                                    b: {
+                                        type: "integer",
+                                    },
+                                },
+                                required: ["a", "b"],
+                            },
+                            minItems: 1,
+                            uniqueItems: true,
+                        },
+                    },
+                    required: ["a", "b", "possibilities"],
+                },
+                uniqueItems: true,
+            },
+            top: {
+                type: "integer",
+                minimum: 1,
+            },
+        },
+        required: ["teams", "matches", "top"],
+    },
+    uniqueItems: true,
+});
+
 const defaultGroups = `[
     {
-        "teams": [
+        teams: [
             "AAA",
             "BBB",
-            "CCC"
+            "CCC",
         ],
-        "matches": [
-            { "team1": "AAA", "team2": "BBB", "possibilities": [ { "score1": 3, "score2": 0 } ] },
-            { "team1": "AAA", "team2": "CCC", "possibilities": [ { "score1": 3, "score2": 0 }, { "score1": 1, "score2": 1 } ] },
-            { "team1": "BBB", "team2": "CCC", "possibilities": [ { "score1": 3, "score2": 0 }, { "score1": 1, "score2": 1 }, { "score1": 0, "score2": 3 } ] }
+        matches: [
+            { a: "AAA", b: "BBB", possibilities: [ { a: 3, b: 0 } ] },
+            { a: "AAA", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 } ] },
+            { a: "BBB", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 }, { a: 0, b: 3 } ] },
         ],
-        "top": 2
-    }
+        top: 2,
+    },
 ]`;
+
+const groupsLocalStorageKey = "groups";
 
 type This = {
     text: string;
     result: Chance[][];
+    errorMessage: string;
 } & Vue;
 
 /* tslint:disable no-unused-expression */
 new Vue({
     el: "#container",
     data: {
-        text: localStorage.getItem("groups") || defaultGroups,
+        text: localStorage.getItem(groupsLocalStorageKey) || defaultGroups,
         result: [],
+        errorMessage: "",
     },
     methods: {
         /* tslint:disable object-literal-shorthand */
         calculate: function(this: This) {
-            const groups: Group[] = JSON.parse(this.text);
-            const result: Chance[][] = [];
-            for (const group of groups) {
-                result.push(calculate(group));
+            try {
+                const groups: Group[] = JSON5.parse(this.text);
+                if (!validate(groups)) {
+                    console.log(validate.errors);
+                    this.errorMessage = validate.errors![0].schemaPath + ": " + validate.errors![0].message;
+                    this.result = [];
+                    return;
+                }
+
+                const result: Chance[][] = [];
+                for (const group of groups) {
+                    result.push(calculate(group));
+                }
+                this.result = result;
+                localStorage.setItem(groupsLocalStorageKey, this.text);
+                this.errorMessage = "";
+            } catch (error) {
+                this.errorMessage = error.message;
+                this.result = [];
             }
-            this.result = result;
-            localStorage.setItem("group", this.text);
         },
     },
 });
 
 type Match = {
-    team1: string;
-    team2: string;
+    a: string;
+    b: string;
     possibilities: {
-        score1: number;
-        score2: number;
+        a: number;
+        b: number;
     }[];
 };
 

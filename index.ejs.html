@@ -15,6 +15,12 @@
         height: 400px;
         margin: 10px auto 10px auto;
     }
+
+    .error-message {
+        width: 90%;
+        color: red;
+        margin: 10px auto 10px auto;
+    }
     
     table {
         border-collapse: collapse;
@@ -26,6 +32,7 @@
         height: 30px;
         width: 90%;
         margin: 10px auto 10px auto;
+        cursor: pointer;
     }
     
     th,
@@ -41,7 +48,8 @@
     }
 </style>
 <div id="container">
-    <textarea v-model="text"></textarea>
+    <textarea v-model="text" spellcheck="false"></textarea>
+    <div v-if="errorMessage" class="error-message">{{errorMessage}}</div>
     <button @click="calculate()">Calculate</button>
     <div class="result">
         <table v-for="(group, i) in result">
