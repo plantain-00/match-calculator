@@ -142,6 +142,21 @@ new Vue({
                     return;
                 }
 
+                for (const group of groups) {
+                    for (const match of group.matches) {
+                        if (group.teams.indexOf(match.a) === -1) {
+                            this.errorMessage = `team name "${match.a}" should be in teams.`;
+                            this.result = [];
+                            return;
+                        }
+                        if (group.teams.indexOf(match.b) === -1) {
+                            this.errorMessage = `team name "${match.b}" should be in teams.`;
+                            this.result = [];
+                            return;
+                        }
+                    }
+                }
+
                 const result: Chance[][] = [];
                 for (const group of groups) {
                     result.push(calculate(group));
