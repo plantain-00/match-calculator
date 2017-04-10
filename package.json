@@ -4,7 +4,7 @@
   "description": "A match calculator",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && rm -f index.bundle-*.js && webpack && rev-static",
+    "build": "tsc && rimraf index.bundle-*.js && webpack && rev-static",
     "lint": "tslint \"*.ts\""
   },
   "repository": {
@@ -22,6 +22,7 @@
     "ajv": "4.11.5",
     "json5": "0.5.1",
     "rev-static": "2.1.2",
+    "rimraf": "2.6.1",
     "tslib": "1.6.0",
     "tslint": "5.0.0",
     "typescript": "2.2.2",
