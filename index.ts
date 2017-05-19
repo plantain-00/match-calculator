@@ -1,6 +1,8 @@
 import * as Vue from "vue";
+import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
+import { indexTemplateHtml } from "./variables";
 
 function calculate(group: Group): Chance[] {
     if (group.top <= 0) {
@@ -116,61 +118,56 @@ const defaultGroups = `[
 
 const groupsLocalStorageKey = "groups";
 
-type This = {
-    text: string;
-    result: Chance[][];
-    errorMessage: string;
-} & Vue;
+@Component({
+    template: indexTemplateHtml,
+})
+class App extends Vue {
+    text = localStorage.getItem(groupsLocalStorageKey) || defaultGroups;
+    result: Chance[][] = [];
+    errorMessage = "";
 
-/* tslint:disable no-unused-expression */
-new Vue({
-    el: "#container",
-    data: {
-        text: localStorage.getItem(groupsLocalStorageKey) || defaultGroups,
-        result: [],
-        errorMessage: "",
-    },
-    methods: {
-        /* tslint:disable object-literal-shorthand */
-        calculate: function(this: This) {
-            try {
-                const groups: Group[] = JSON5.parse(this.text);
-                if (!validate(groups)) {
-                    console.log(validate.errors);
-                    this.errorMessage = validate.errors![0].schemaPath + ": " + validate.errors![0].message;
-                    this.result = [];
-                    return;
-                }
+    calculate() {
+        try {
+            const groups: Group[] = JSON5.parse(this.text);
+            if (!validate(groups)) {
+                console.log(validate.errors);
+                this.errorMessage = validate.errors![0].schemaPath + ": " + validate.errors![0].message;
+                this.result = [];
+                return;
+            }
 
-                for (const group of groups) {
-                    for (const match of group.matches) {
-                        if (group.teams.indexOf(match.a) === -1) {
-                            this.errorMessage = `team name "${match.a}" should be in teams.`;
-                            this.result = [];
-                            return;
-                        }
-                        if (group.teams.indexOf(match.b) === -1) {
-                            this.errorMessage = `team name "${match.b}" should be in teams.`;
-                            this.result = [];
-                            return;
-                        }
+            for (const group of groups) {
+                for (const match of group.matches) {
+                    if (group.teams.indexOf(match.a) === -1) {
+                        this.errorMessage = `team name "${match.a}" should be in teams.`;
+                        this.result = [];
+                        return;
+                    }
+                    if (group.teams.indexOf(match.b) === -1) {
+                        this.errorMessage = `team name "${match.b}" should be in teams.`;
+                        this.result = [];
+                        return;
                     }
                 }
-
-                const result: Chance[][] = [];
-                for (const group of groups) {
-                    result.push(calculate(group));
-                }
-                this.result = result;
-                localStorage.setItem(groupsLocalStorageKey, this.text);
-                this.errorMessage = "";
-            } catch (error) {
-                this.errorMessage = error.message;
-                this.result = [];
             }
-        },
-    },
-});
+
+            const result: Chance[][] = [];
+            for (const group of groups) {
+                result.push(calculate(group));
+            }
+            this.result = result;
+            localStorage.setItem(groupsLocalStorageKey, this.text);
+            this.errorMessage = "";
+        } catch (error) {
+            this.errorMessage = error.message;
+            this.result = [];
+        }
+    }
+}
+
+/* tslint:disable no-unused-expression */
+new App({ el: "#container" });
+/* tslint:enable no-unused-expression */
 
 type Match = {
     a: string;
