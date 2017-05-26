@@ -1,0 +1,47 @@
+* {
+    font-family: "Lucida Grande", Lucida Sans Unicode, Hiragino Sans GB, WenQuanYi Micro Hei, Verdana, Aril, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    width: 90%;
+    height: 400px;
+    margin: 10px auto 10px auto;
+}
+
+.error-message {
+    width: 90%;
+    color: red;
+    margin: 10px auto 10px auto;
+}
+
+table {
+    border-collapse: collapse;
+    display: inline-block;
+    margin: 5px;
+}
+
+button {
+    height: 30px;
+    width: 90%;
+    margin: 10px auto 10px auto;
+    cursor: pointer;
+}
+
+th,
+td {
+    text-align: center;
+    border: 1px solid black;
+    width: 200px;
+    height: 30px;
+}
+
+.result {
+    margin: 10px auto 10px auto;
+}
