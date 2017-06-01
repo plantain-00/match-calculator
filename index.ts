@@ -130,6 +130,7 @@ class App extends Vue {
         try {
             const groups: Group[] = JSON5.parse(this.text);
             if (!validate(groups)) {
+                // tslint:disable-next-line:no-console
                 console.log(validate.errors);
                 this.errorMessage = validate.errors![0].schemaPath + ": " + validate.errors![0].message;
                 this.result = [];
@@ -165,9 +166,8 @@ class App extends Vue {
     }
 }
 
-/* tslint:disable no-unused-expression */
+// tslint:disable-next-line:no-unused-expression
 new App({ el: "#container" });
-/* tslint:enable no-unused-expression */
 
 type Match = {
     a: string;
@@ -191,6 +191,7 @@ type Chance = {
 
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register("service-worker.bundle.js").catch(error => {
+        // tslint:disable-next-line:no-console
         console.log("registration failed with error: " + error);
     });
 }
