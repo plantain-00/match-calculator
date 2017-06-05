@@ -8,6 +8,10 @@ function calculate(group: Group): Chance[] {
     if (group.top <= 0) {
         throw new Error(`wrong argument "top": ${top}`);
     }
+    /**
+     * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
+     * `possibilitiesCount` is 1 * 2 * 3 = 6
+     */
     const possibilitiesCount = group.matches.reduce((p, c) => p * c.possibilities.length, 1);
 
     const chances: Chance[] = group.teams.map(t => ({
@@ -20,14 +24,36 @@ function calculate(group: Group): Chance[] {
             name: t,
             score: 0,
         }));
+        /**
+         * j | indexes
+         * --- | ---
+         * 0 | [0, 0, 0]
+         * 1 | [0, 1, 0]
+         * 2 | [0, 0, 1]
+         * 3 | [0, 1, 1]
+         * 4 | [0, 0, 2]
+         * 5 | [0, 1, 2]
+         */
         let j = i;
         for (const match of group.matches) {
             const possibility = match.possibilities[j % match.possibilities.length];
-            scores.find(s => s.name === match.a)!.score += possibility.a;
-            scores.find(s => s.name === match.b)!.score += possibility.b;
+            if (possibility.a !== 0) {
+                scores.find(s => s.name === match.a)!.score += possibility.a;
+            }
+            if (possibility.b !== 0) {
+                scores.find(s => s.name === match.b)!.score += possibility.b;
+            }
             j = Math.round(j / match.possibilities.length);
         }
         scores.sort((a, b) => b.score - a.score);
+        /**
+         * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
+         * `drawScore` is `scores[top - 1]`(30)
+         * `drawStartIndex` is 1, `drawCount` is 3
+         * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
+         * otherwise any team `< top` will get a chance of 1
+         * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
+         */
         const drawScore = scores[group.top - 1].score;
         const drawStartIndex = scores.findIndex(s => s.score === drawScore);
         const drawCount = scores.filter(s => s.score === drawScore).length;
