@@ -22,16 +22,17 @@ function calculate(group: Group): Chance[] {
         }));
         let j = i;
         for (const match of group.matches) {
-            const possibility = match.possibilities[i % match.possibilities.length];
+            const possibility = match.possibilities[j % match.possibilities.length];
             scores.find(s => s.name === match.a)!.score += possibility.a;
             scores.find(s => s.name === match.b)!.score += possibility.b;
-            j = j / match.possibilities.length;
+            j = Math.round(j / match.possibilities.length);
         }
         scores.sort((a, b) => b.score - a.score);
-        const drawStartIndex = scores.findIndex(s => s.score === scores[group.top - 1].score);
-        const drawCount = scores.filter(s => s.score === scores[group.top - 1].score).length;
+        const drawScore = scores[group.top - 1].score;
+        const drawStartIndex = scores.findIndex(s => s.score === drawScore);
+        const drawCount = scores.filter(s => s.score === drawScore).length;
         for (let k = 0; k < scores.length; k++) {
-            if (scores[k].score === scores[group.top - 1].score) {
+            if (scores[k].score === drawScore) {
                 chances.find(s => s.name === scores[k].name)!.chance += ((group.top - drawStartIndex) / drawCount);
             } else if (k < group.top) {
                 chances.find(s => s.name === scores[k].name)!.chance++;
