@@ -4,7 +4,7 @@
   "description": "A match calculator",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf index.bundle-*.js && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
+    "build": "rimraf index.bundle-*.js index.bundle-*.css && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
     "lint": "tslint \"*.ts\"",
     "file2variable": "file2variable-cli index.template.html -o variables.ts --html-minify",
     "sw-precache": "sw-precache --config sw-precache.config.js && npm run uglifyjs",
