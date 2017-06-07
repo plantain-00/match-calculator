@@ -17,6 +17,8 @@ function calculate(group: Group): Chance[] {
     const chances: Chance[] = group.teams.map(t => ({
         name: t,
         chance: 0,
+        score: 0,
+        matchCountLeft: 0,
     }));
 
     for (let i = 0; i < possibilitiesCount; i++) {
@@ -67,8 +69,30 @@ function calculate(group: Group): Chance[] {
             }
         }
     }
+
+    for (const match of group.matches) {
+        if (match.possibilities.length === 1) {
+            const possibility = match.possibilities[0];
+            if (possibility.a !== 0) {
+                chances.find(s => s.name === match.a)!.score += possibility.a;
+            }
+            if (possibility.b !== 0) {
+                chances.find(s => s.name === match.b)!.score += possibility.b;
+            }
+        } else if (match.possibilities.length > 1) {
+            chances.find(s => s.name === match.a)!.matchCountLeft++;
+            chances.find(s => s.name === match.b)!.matchCountLeft++;
+        }
+    }
+
     chances.sort((a, b) => b.chance - a.chance);
-    return chances.map(c => ({ name: c.name, chance: Math.round(100 * c.chance / possibilitiesCount) / 100 }));
+
+    return chances.map(c => ({
+        name: c.name,
+        chance: Math.round(100 * c.chance / possibilitiesCount) / 100,
+        score: c.score,
+        matchCountLeft: c.matchCountLeft,
+    }));
 }
 
 const ajv = new Ajv();
@@ -150,7 +174,7 @@ const groupsLocalStorageKey = "groups";
 })
 class App extends Vue {
     text = localStorage.getItem(groupsLocalStorageKey) || defaultGroups;
-    result: Chance[][] = [];
+    result: GroupChance[] = [];
     errorMessage = "";
 
     calculate() {
@@ -179,9 +203,12 @@ class App extends Vue {
                 }
             }
 
-            const result: Chance[][] = [];
+            const result: GroupChance[] = [];
             for (const group of groups) {
-                result.push(calculate(group));
+                result.push({
+                    top: group.top,
+                    chances: calculate(group),
+                });
             }
             this.result = result;
             localStorage.setItem(groupsLocalStorageKey, this.text);
@@ -214,6 +241,13 @@ type Group = {
 type Chance = {
     name: string;
     chance: number;
+    score: number;
+    matchCountLeft: number;
+};
+
+type GroupChance = {
+    top: number;
+    chances: Chance[];
 };
 
 if (navigator.serviceWorker) {

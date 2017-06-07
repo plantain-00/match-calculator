@@ -4,12 +4,12 @@
   "description": "A match calculator",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf index.bundle-*.js && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
+    "build": "rimraf index.bundle-*.js && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
     "lint": "tslint \"*.ts\"",
     "file2variable": "file2variable-cli index.template.html -o variables.ts --html-minify",
     "sw-precache": "sw-precache --config sw-precache.config.js && npm run uglifyjs",
     "uglifyjs": "uglifyjs service-worker.js -o service-worker.bundle.js",
-    "clean-css": "cleancss index.css -o index.bundle.css"
+    "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css -o index.bundle.css"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "ajv": "5.1.5",
     "clean-css-cli": "4.1.3",
     "file2variable-cli": "1.3.0",
+    "github-fork-ribbon-css": "0.2.1",
     "json5": "0.5.1",
     "rev-static": "2.4.2",
     "rimraf": "2.6.1",
