@@ -5,9 +5,6 @@ import * as Ajv from "ajv";
 import { indexTemplateHtml } from "./variables";
 
 function calculate(group: Group): Chance[] {
-    if (group.top <= 0) {
-        throw new Error(`wrong argument "top": ${top}`);
-    }
     /**
      * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
      * `possibilitiesCount` is 1 * 2 * 3 = 6
@@ -16,7 +13,7 @@ function calculate(group: Group): Chance[] {
 
     const chances: Chance[] = group.teams.map(t => ({
         name: t,
-        chance: 0,
+        chances: group.tops.map(top => 0),
         score: 0,
         matchCountLeft: 0,
     }));
@@ -48,24 +45,27 @@ function calculate(group: Group): Chance[] {
             j = Math.round(j / match.possibilities.length);
         }
         scores.sort((a, b) => b.score - a.score);
-        /**
-         * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
-         * `drawScore` is `scores[top - 1]`(30)
-         * `drawStartIndex` is 1, `drawCount` is 3
-         * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
-         * otherwise any team `< top` will get a chance of 1
-         * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
-         */
-        const drawScore = scores[group.top - 1].score;
-        const drawStartIndex = scores.findIndex(s => s.score === drawScore);
-        const drawCount = scores.filter(s => s.score === drawScore).length;
-        for (let k = 0; k < scores.length; k++) {
-            if (scores[k].score === drawScore) {
-                chances.find(s => s.name === scores[k].name)!.chance += ((group.top - drawStartIndex) / drawCount);
-            } else if (k < group.top) {
-                chances.find(s => s.name === scores[k].name)!.chance++;
-            } else {
-                break;
+        for (let m = 0; m < group.tops.length; m++) {
+            const top = group.tops[m];
+            /**
+             * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
+             * `drawScore` is `scores[top - 1]`(30)
+             * `drawStartIndex` is 1, `drawCount` is 3
+             * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
+             * otherwise any team `< top` will get a chance of 1
+             * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
+             */
+            const drawScore = scores[top - 1].score;
+            const drawStartIndex = scores.findIndex(s => s.score === drawScore);
+            const drawCount = scores.filter(s => s.score === drawScore).length;
+            for (let k = 0; k < scores.length; k++) {
+                if (scores[k].score === drawScore) {
+                    chances.find(s => s.name === scores[k].name)!.chances[m] += ((top - drawStartIndex) / drawCount);
+                } else if (k < top) {
+                    chances.find(s => s.name === scores[k].name)!.chances[m]++;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -85,11 +85,11 @@ function calculate(group: Group): Chance[] {
         }
     }
 
-    chances.sort((a, b) => b.chance - a.chance);
+    chances.sort((a, b) => b.chances.reduce((p, c) => p + c, 0) - a.chances.reduce((p, c) => p + c, 0));
 
     return chances.map(c => ({
         name: c.name,
-        chance: Math.round(100 * c.chance / possibilitiesCount) / 100,
+        chances: c.chances.map(chance => Math.round(100 * chance / possibilitiesCount)),
         score: c.score,
         matchCountLeft: c.matchCountLeft,
     }));
@@ -141,12 +141,17 @@ const validate = ajv.compile({
                 },
                 uniqueItems: true,
             },
-            top: {
-                type: "integer",
-                minimum: 1,
+            tops: {
+                type: "array",
+                items: {
+                    type: "integer",
+                    minimum: 1,
+                },
+                minItems: 1,
+                uniqueItems: true,
             },
         },
-        required: ["teams", "matches", "top"],
+        required: ["teams", "matches", "tops"],
     },
     uniqueItems: true,
 });
@@ -163,7 +168,7 @@ const defaultGroups = `[
             { a: "AAA", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 } ] },
             { a: "BBB", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 }, { a: 0, b: 3 } ] },
         ],
-        top: 2,
+        tops: [2],
     },
 ]`;
 
@@ -206,7 +211,7 @@ class App extends Vue {
             const result: GroupChance[] = [];
             for (const group of groups) {
                 result.push({
-                    top: group.top,
+                    tops: group.tops,
                     chances: calculate(group),
                 });
             }
@@ -235,18 +240,18 @@ type Match = {
 type Group = {
     matches: Match[];
     teams: string[];
-    top: number;
+    tops: number[];
 };
 
 type Chance = {
     name: string;
-    chance: number;
+    chances: number[];
     score: number;
     matchCountLeft: number;
 };
 
 type GroupChance = {
-    top: number;
+    tops: number[];
     chances: Chance[];
 };
 
