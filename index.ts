@@ -85,7 +85,17 @@ function calculate(group: Group): Chance[] {
         }
     }
 
-    chances.sort((a, b) => b.chances.reduce((p, c) => p + c, 0) - a.chances.reduce((p, c) => p + c, 0));
+    chances.sort((a, b) => {
+        for (let i = 0; i < a.chances.length; i++) {
+            if (b.chances[i] > a.chances[i]) {
+                return 1;
+            }
+            if (b.chances[i] < a.chances[i]) {
+                return -1;
+            }
+        }
+        return b.score - a.score;
+    });
 
     return chances.map(c => ({
         name: c.name,
