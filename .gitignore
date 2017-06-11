@@ -35,13 +35,12 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# Source
 .vscode
-index.html
 index.js
-index.bundle-*.js
 index.bundle.js
 variables.js
-index.bundle-*.css
 index.bundle.css
 service-worker.js
 service-worker.bundle.js
