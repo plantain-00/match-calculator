@@ -1,4 +1,4 @@
-import * as Vue from "vue";
+import Vue from "vue";
 import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
