@@ -2,7 +2,8 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
-import { indexTemplateHtml } from "./variables";
+import "tab-container-component/dist/vue";
+import { indexTemplateHtml, generateMatchesTemplateHtml } from "./variables";
 
 function calculate(group: Group): Chance[] {
     /**
@@ -106,7 +107,7 @@ function calculate(group: Group): Chance[] {
 }
 
 const ajv = new Ajv();
-const validate = ajv.compile({
+const validateGroups = ajv.compile({
     type: "array",
     items: {
         type: "object",
@@ -165,6 +166,13 @@ const validate = ajv.compile({
     },
     uniqueItems: true,
 });
+const validateTeams = ajv.compile({
+    type: "array",
+    items: {
+        type: "string",
+    },
+    uniqueItems: true,
+});
 
 const defaultGroups = `[
     {
@@ -181,24 +189,32 @@ const defaultGroups = `[
         tops: [2],
     },
 ]`;
+const defaultTeams = `[
+    "AAA",
+    "BBB",
+    "CCC",
+]`;
 
 const groupsLocalStorageKey = "groups";
+const teamsLocalStorageKey = "teams";
 
 @Component({
     template: indexTemplateHtml,
 })
-class App extends Vue {
+class Main extends Vue {
     text = localStorage.getItem(groupsLocalStorageKey) || defaultGroups;
     result: GroupChance[] = [];
     errorMessage = "";
 
     calculate() {
         try {
+            localStorage.setItem(groupsLocalStorageKey, this.text);
+
             const groups: Group[] = JSON5.parse(this.text);
-            if (!validate(groups)) {
+            if (!validateGroups(groups)) {
                 // tslint:disable-next-line:no-console
-                console.log(validate.errors);
-                this.errorMessage = validate.errors![0].schemaPath + ": " + validate.errors![0].message;
+                console.log(validateGroups.errors);
+                this.errorMessage = validateGroups.errors![0].schemaPath + ": " + validateGroups.errors![0].message;
                 this.result = [];
                 return;
             }
@@ -226,13 +242,69 @@ class App extends Vue {
                 });
             }
             this.result = result;
-            localStorage.setItem(groupsLocalStorageKey, this.text);
             this.errorMessage = "";
         } catch (error) {
             this.errorMessage = error.message;
             this.result = [];
         }
     }
+}
+
+@Component({
+    template: generateMatchesTemplateHtml,
+})
+class GenerateMatches extends Vue {
+    text = localStorage.getItem(teamsLocalStorageKey) || defaultTeams;
+    result = "";
+    errorMessage = "";
+
+    generate() {
+        try {
+            localStorage.setItem(teamsLocalStorageKey, this.text);
+
+            const teams: string[] = JSON5.parse(this.text);
+            if (!validateTeams(teams)) {
+                // tslint:disable-next-line:no-console
+                console.log(validateTeams.errors);
+                this.errorMessage = validateTeams.errors![0].schemaPath + ": " + validateTeams.errors![0].message;
+                this.result = "";
+                return;
+            }
+            let result = "";
+            for (let i = 0; i < teams.length; i++) {
+                for (let j = i + 1; j < teams.length; j++) {
+                    result += `            { a: "${teams[i]}", b: "${teams[j]}", possibilities: [] },\n`;
+                }
+            }
+            this.result = result;
+            this.errorMessage = "";
+        } catch (error) {
+            this.errorMessage = error.message;
+            this.result = "";
+        }
+    }
+}
+
+Vue.component("main-page", Main);
+
+Vue.component("generate-matches", GenerateMatches);
+
+@Component({
+    template: `<tab-container :data="data"></tab-container>`,
+})
+class App extends Vue {
+    data = [
+        {
+            isActive: true,
+            title: "Main",
+            component: "main-page",
+        },
+        {
+            isActive: false,
+            title: "Generate Matches",
+            component: "generate-matches",
+        },
+    ];
 }
 
 // tslint:disable-next-line:no-unused-expression

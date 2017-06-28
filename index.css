@@ -3,45 +3,70 @@
     -webkit-font-smoothing: antialiased;
 }
 
-#container {
+.main {
     display: flex;
     flex-direction: column;
 }
 
-textarea {
+.main textarea {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     width: 90%;
     height: 400px;
     margin: 10px auto 10px auto;
 }
 
-.error-message {
+.main .error-message {
     width: 90%;
     color: red;
     margin: 10px auto 10px auto;
 }
 
-table {
+.main table {
     border-collapse: collapse;
     display: inline-block;
     margin: 5px;
 }
 
-button {
+.main button {
     height: 30px;
     width: 90%;
     margin: 10px auto 10px auto;
     cursor: pointer;
 }
 
-th,
-td {
+.main th,
+.main td {
     text-align: center;
     border: 1px solid black;
     padding: 5px;
     height: 30px;
 }
 
-.result {
+.main .result {
     margin: 10px auto 10px auto;
+}
+
+.generate-matches {
+    display: flex;
+    flex-direction: column;
+}
+
+.generate-matches textarea {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    width: 90%;
+    height: 200px;
+    margin: 10px auto 10px auto;
+}
+
+.generate-matches .error-message {
+    width: 90%;
+    color: red;
+    margin: 10px auto 10px auto;
+}
+
+.generate-matches button {
+    height: 30px;
+    width: 90%;
+    margin: 10px auto 10px auto;
+    cursor: pointer;
 }

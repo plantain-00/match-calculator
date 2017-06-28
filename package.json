@@ -6,10 +6,10 @@
   "scripts": {
     "build": "rimraf index.bundle-*.js index.bundle-*.css && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
     "lint": "tslint \"*.ts\"",
-    "file2variable": "file2variable-cli index.template.html -o variables.ts --html-minify",
+    "file2variable": "file2variable-cli *.template.html -o variables.ts --html-minify",
     "sw-precache": "sw-precache --config sw-precache.config.js && npm run uglifyjs",
     "uglifyjs": "uglifyjs service-worker.js -o service-worker.bundle.js",
-    "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css -o index.bundle.css"
+    "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "rev-static": "2.4.2",
     "rimraf": "2.6.1",
     "sw-precache": "5.1.1",
+    "tab-container-component": "1.0.0",
     "tslib": "1.7.1",
     "tslint": "5.4.0",
     "typescript": "2.4.0",

@@ -1,0 +1,6 @@
+<div class="generate-matches">
+    <textarea v-model="text" spellcheck="false"></textarea>
+    <div v-if="errorMessage" class="error-message">{{errorMessage}}</div>
+    <button @click="generate()">Generate</button>
+    <textarea v-model="result"></textarea>
+</div>
