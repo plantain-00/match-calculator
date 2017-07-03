@@ -11,7 +11,8 @@
     "uglifyjs": "uglifyjs service-worker.js -o service-worker.bundle.js",
     "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css",
     "standard": "standard \"**/*.config.js\"",
-    "fix": "standard --fix \"**/*.config.js\""
+    "fix": "standard --fix \"**/*.config.js\"",
+    "test": "tsc -p spec && karma start spec/karma.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,12 +25,19 @@
   },
   "homepage": "https://github.com/plantain-00/match-calculator#readme",
   "devDependencies": {
+    "@types/jasmine": "2.5.53",
     "@types/json5": "0.0.29",
     "ajv": "5.2.0",
     "clean-css-cli": "4.1.6",
     "file2variable-cli": "1.4.0",
     "github-fork-ribbon-css": "0.2.1",
+    "jasmine": "2.6.0",
     "json5": "0.5.1",
+    "karma": "1.7.0",
+    "karma-chrome-launcher": "2.2.0",
+    "karma-firefox-launcher": "1.0.1",
+    "karma-jasmine": "1.1.0",
+    "karma-webpack": "2.0.3",
     "rev-static": "2.6.0",
     "rimraf": "2.6.1",
     "standard": "10.0.2",
