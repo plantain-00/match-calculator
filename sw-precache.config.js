@@ -1,7 +1,6 @@
 module.exports = {
   staticFileGlobs: [
-    'index.bundle-*.js',
-    'index.bundle-*.css',
+    'vendor.bundle-*.js',
     'index.html'
   ]
 }

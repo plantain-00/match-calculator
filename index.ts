@@ -2,7 +2,6 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
-import "tab-container-component/dist/vue";
 import { indexTemplateHtml, generateMatchesTemplateHtml } from "./variables";
 
 function calculate(group: Group): Chance[] {
