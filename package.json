@@ -4,15 +4,16 @@
   "description": "A match calculator",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf index.bundle-*.js index.bundle-*.css && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
+    "build": "rimraf index.bundle-*.js index.bundle-*.css && npm run types-as-schema && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
     "lint": "tslint \"*.ts\" && npm run standard",
-    "file2variable": "file2variable-cli *.template.html -o variables.ts --html-minify",
+    "file2variable": "file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json",
     "sw-precache": "sw-precache --config sw-precache.config.js && npm run uglifyjs",
     "uglifyjs": "uglifyjs service-worker.js -o service-worker.bundle.js",
     "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css",
     "standard": "standard \"**/*.config.js\"",
     "fix": "standard --fix \"**/*.config.js\"",
-    "test": "tsc -p spec && karma start spec/karma.config.js"
+    "test": "tsc -p spec && karma start spec/karma.config.js",
+    "types-as-schema": "types-as-schema types.ts --json ."
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "tab-container-component": "1.1.0",
     "tslib": "1.7.1",
     "tslint": "5.4.3",
+    "types-as-schema": "1.1.0",
     "typescript": "2.4.1",
     "uglify-js": "3.0.22",
     "vue": "2.3.4",

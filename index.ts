@@ -2,9 +2,10 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
-import { indexTemplateHtml, generateMatchesTemplateHtml } from "./variables";
+import { indexTemplateHtml, generateMatchesTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
+import * as types from "./types";
 
-function calculate(group: Group): Chance[] {
+function calculate(group: types.Group): Chance[] {
     /**
      * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
      * `possibilitiesCount` is 1 * 2 * 3 = 6
@@ -106,72 +107,8 @@ function calculate(group: Group): Chance[] {
 }
 
 const ajv = new Ajv();
-const validateGroups = ajv.compile({
-    type: "array",
-    items: {
-        type: "object",
-        properties: {
-            teams: {
-                type: "array",
-                items: {
-                    type: "string",
-                },
-                uniqueItems: true,
-            },
-            matches: {
-                type: "array",
-                items: {
-                    type: "object",
-                    properties: {
-                        a: {
-                            type: "string",
-                        },
-                        b: {
-                            type: "string",
-                        },
-                        possibilities: {
-                            type: "array",
-                            items: {
-                                type: "object",
-                                properties: {
-                                    a: {
-                                        type: "integer",
-                                    },
-                                    b: {
-                                        type: "integer",
-                                    },
-                                },
-                                required: ["a", "b"],
-                            },
-                            minItems: 1,
-                            uniqueItems: true,
-                        },
-                    },
-                    required: ["a", "b", "possibilities"],
-                },
-                uniqueItems: true,
-            },
-            tops: {
-                type: "array",
-                items: {
-                    type: "integer",
-                    minimum: 1,
-                },
-                minItems: 1,
-                uniqueItems: true,
-            },
-        },
-        required: ["teams", "matches", "tops"],
-    },
-    uniqueItems: true,
-});
-const validateTeams = ajv.compile({
-    type: "array",
-    items: {
-        type: "string",
-    },
-    uniqueItems: true,
-});
+const validateGroups = ajv.compile(groupsSchemaJson);
+const validateTeams = ajv.compile(teamsSchemaJson);
 
 const defaultGroups = `[
     {
@@ -209,7 +146,7 @@ class Main extends Vue {
         try {
             localStorage.setItem(groupsLocalStorageKey, this.text);
 
-            const groups: Group[] = JSON5.parse(this.text);
+            const groups: types.Group[] = JSON5.parse(this.text);
             if (!validateGroups(groups)) {
                 // tslint:disable-next-line:no-console
                 console.log(validateGroups.errors);
@@ -308,21 +245,6 @@ class App extends Vue {
 
 // tslint:disable-next-line:no-unused-expression
 new App({ el: "#container" });
-
-type Match = {
-    a: string;
-    b: string;
-    possibilities: {
-        a: number;
-        b: number;
-    }[];
-};
-
-type Group = {
-    matches: Match[];
-    teams: string[];
-    tops: number[];
-};
 
 type Chance = {
     name: string;
