@@ -4,16 +4,10 @@
   "description": "A match calculator",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf index.bundle-*.js index.bundle-*.css && npm run types-as-schema && npm run file2variable && tsc && npm run clean-css && webpack && rev-static && npm run sw-precache",
-    "lint": "tslint \"*.ts\" && npm run standard",
-    "file2variable": "file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json",
-    "sw-precache": "sw-precache --config sw-precache.config.js && npm run uglifyjs",
-    "uglifyjs": "uglifyjs service-worker.js -o service-worker.bundle.js",
-    "clean-css": "cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css",
-    "standard": "standard \"**/*.config.js\"",
-    "fix": "standard --fix \"**/*.config.js\"",
-    "test": "tsc -p spec && karma start spec/karma.config.js",
-    "types-as-schema": "types-as-schema types.ts --json ."
+    "build": "clean-scripts build",
+    "lint": "clean-scripts lint",
+    "test": "clean-scripts test",
+    "fix": "clean-scripts fix"
   },
   "repository": {
     "type": "git",
@@ -30,6 +24,7 @@
     "@types/json5": "0.0.29",
     "ajv": "5.2.0",
     "clean-css-cli": "4.1.6",
+    "clean-scripts": "1.0.0",
     "file2variable-cli": "1.4.0",
     "github-fork-ribbon-css": "0.2.1",
     "jasmine": "2.6.0",
