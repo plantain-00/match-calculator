@@ -36,6 +36,7 @@
     "karma-webpack": "2.0.4",
     "rev-static": "3.2.2",
     "rimraf": "2.6.1",
+    "rxjs": "5.4.2",
     "standard": "10.0.2",
     "sw-precache": "5.2.0",
     "tab-container-component": "2.0.0",

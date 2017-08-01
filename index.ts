@@ -2,113 +2,21 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as JSON5 from "json5";
 import * as Ajv from "ajv";
+import { Subject } from "rxjs/Subject";
 import { indexTemplateHtml, generateMatchesTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
 import * as types from "./types";
-
-function calculate(group: types.Group): Chance[] {
-    /**
-     * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
-     * `possibilitiesCount` is 1 * 2 * 3 = 6
-     */
-    const possibilitiesCount = group.matches.reduce((p, c) => p * c.possibilities.length, 1);
-
-    const chances: Chance[] = group.teams.map(t => ({
-        name: t,
-        chances: group.tops.map(top => 0),
-        score: 0,
-        matchCountLeft: 0,
-    }));
-
-    for (let i = 0; i < possibilitiesCount; i++) {
-        const scores = group.teams.map(t => ({
-            name: t,
-            score: 0,
-        }));
-        /**
-         * j | indexes
-         * --- | ---
-         * 0 | [0, 0, 0]
-         * 1 | [0, 1, 0]
-         * 2 | [0, 0, 1]
-         * 3 | [0, 1, 1]
-         * 4 | [0, 0, 2]
-         * 5 | [0, 1, 2]
-         */
-        let j = i;
-        for (const match of group.matches) {
-            const possibility = match.possibilities[j % match.possibilities.length];
-            if (possibility.a !== 0) {
-                scores.find(s => s.name === match.a)!.score += possibility.a;
-            }
-            if (possibility.b !== 0) {
-                scores.find(s => s.name === match.b)!.score += possibility.b;
-            }
-            j = Math.round(j / match.possibilities.length);
-        }
-        scores.sort((a, b) => b.score - a.score);
-        for (let m = 0; m < group.tops.length; m++) {
-            const top = group.tops[m];
-            /**
-             * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
-             * `drawScore` is `scores[top - 1]`(30)
-             * `drawStartIndex` is 1, `drawCount` is 3
-             * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
-             * otherwise any team `< top` will get a chance of 1
-             * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
-             */
-            const drawScore = scores[top - 1].score;
-            const drawStartIndex = scores.findIndex(s => s.score === drawScore);
-            const drawCount = scores.filter(s => s.score === drawScore).length;
-            for (let k = 0; k < scores.length; k++) {
-                if (scores[k].score === drawScore) {
-                    chances.find(s => s.name === scores[k].name)!.chances[m] += ((top - drawStartIndex) / drawCount);
-                } else if (k < top) {
-                    chances.find(s => s.name === scores[k].name)!.chances[m]++;
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    for (const match of group.matches) {
-        if (match.possibilities.length === 1) {
-            const possibility = match.possibilities[0];
-            if (possibility.a !== 0) {
-                chances.find(s => s.name === match.a)!.score += possibility.a;
-            }
-            if (possibility.b !== 0) {
-                chances.find(s => s.name === match.b)!.score += possibility.b;
-            }
-        } else if (match.possibilities.length > 1) {
-            chances.find(s => s.name === match.a)!.matchCountLeft++;
-            chances.find(s => s.name === match.b)!.matchCountLeft++;
-        }
-    }
-
-    chances.sort((a, b) => {
-        for (let i = 0; i < a.chances.length; i++) {
-            if (b.chances[i] > a.chances[i]) {
-                return 1;
-            }
-            if (b.chances[i] < a.chances[i]) {
-                return -1;
-            }
-        }
-        return b.score - a.score;
-    });
-
-    return chances.map(c => ({
-        name: c.name,
-        chances: c.chances.map(chance => Math.round(100 * chance / possibilitiesCount)),
-        score: c.score,
-        matchCountLeft: c.matchCountLeft,
-    }));
-}
+import { GroupChance } from "./worker";
 
 const ajv = new Ajv();
 const validateGroups = ajv.compile(groupsSchemaJson);
 const validateTeams = ajv.compile(teamsSchemaJson);
+const worker = new Worker("worker.bundle.js");
+const resultSubject = new Subject<GroupChance[]>();
+
+worker.onmessage = e => {
+    const result: GroupChance[] = e.data;
+    resultSubject.next(result);
+};
 
 const defaultGroups = `[
     {
@@ -142,6 +50,16 @@ class Main extends Vue {
     result: GroupChance[] = [];
     errorMessage = "";
 
+    mounted() {
+        resultSubject.subscribe(result => {
+            this.result = result;
+        });
+    }
+
+    beforeDestroy() {
+        resultSubject.unsubscribe();
+    }
+
     calculate() {
         try {
             localStorage.setItem(groupsLocalStorageKey, this.text);
@@ -170,14 +88,7 @@ class Main extends Vue {
                 }
             }
 
-            const result: GroupChance[] = [];
-            for (const group of groups) {
-                result.push({
-                    tops: group.tops,
-                    chances: calculate(group),
-                });
-            }
-            this.result = result;
+            worker.postMessage(groups);
             this.errorMessage = "";
         } catch (error) {
             this.errorMessage = error.message;
@@ -245,18 +156,6 @@ class App extends Vue {
 
 // tslint:disable-next-line:no-unused-expression
 new App({ el: "#container" });
-
-type Chance = {
-    name: string;
-    chances: number[];
-    score: number;
-    matchCountLeft: number;
-};
-
-type GroupChance = {
-    tops: number[];
-    chances: Chance[];
-};
 
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register("service-worker.bundle.js").catch(error => {

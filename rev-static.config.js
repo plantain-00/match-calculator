@@ -5,7 +5,8 @@ module.exports = {
     'index.ejs.html'
   ],
   excludeFiles: [
-    'service-worker.bundle.js'
+    'service-worker.bundle.js',
+    'worker.bundle.js'
   ],
   outputFiles: file => file.replace('.ejs', ''),
   inlinedFiles: [
