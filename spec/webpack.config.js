@@ -6,15 +6,7 @@ const plugins = [
       'NODE_ENV': JSON.stringify('production')
     }
   }),
-  new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    },
-    output: {
-      comments: false
-    }
-  })
+  new webpack.NoEmitOnErrorsPlugin()
 ]
 
 const resolve = {

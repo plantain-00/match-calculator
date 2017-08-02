@@ -18,12 +18,11 @@ module.exports = [
       }),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        },
         output: {
           comments: false
-        }
+        },
+        exclude: [
+        ]
       }),
       new webpack.optimize.CommonsChunkPlugin({
         name: ['index', 'vendor']
@@ -51,12 +50,11 @@ module.exports = [
       }),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        },
         output: {
           comments: false
-        }
+        },
+        exclude: [
+        ]
       })
     ]
   }
