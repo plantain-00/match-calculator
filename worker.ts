@@ -1,18 +1,11 @@
 import * as types from "./types";
 
-function calculate(group: types.Group): Chance[] {
+function calculateChances(group: types.Group, chances: Chance[]) {
     /**
      * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
      * `possibilitiesCount` is 1 * 2 * 3 = 6
      */
     const possibilitiesCount = group.matches.reduce((p, c) => p * c.possibilities.length, 1);
-
-    const chances: Chance[] = group.teams.map(t => ({
-        name: t,
-        chances: group.tops.map(top => 0),
-        score: 0,
-        matchCountLeft: 0,
-    }));
 
     for (let i = 0; i < possibilitiesCount; i++) {
         if (i % 100000 === 0) {
@@ -70,6 +63,24 @@ function calculate(group: types.Group): Chance[] {
         }
     }
 
+    chances.sort((a, b) => {
+        for (let i = 0; i < a.chances.length; i++) {
+            if (b.chances[i] > a.chances[i]) {
+                return 1;
+            }
+            if (b.chances[i] < a.chances[i]) {
+                return -1;
+            }
+        }
+        return b.score - a.score;
+    });
+
+    for (const c of chances) {
+        c.chances = c.chances.map(chance => Math.round(100 * chance / possibilitiesCount));
+    }
+}
+
+function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) {
     for (const match of group.matches) {
         if (match.possibilities.length === 1) {
             const possibility = match.possibilities[0];
@@ -84,35 +95,31 @@ function calculate(group: types.Group): Chance[] {
             chances.find(s => s.name === match.b)!.matchCountLeft++;
         }
     }
-
-    chances.sort((a, b) => {
-        for (let i = 0; i < a.chances.length; i++) {
-            if (b.chances[i] > a.chances[i]) {
-                return 1;
-            }
-            if (b.chances[i] < a.chances[i]) {
-                return -1;
-            }
-        }
-        return b.score - a.score;
-    });
-
-    return chances.map(c => ({
-        name: c.name,
-        chances: c.chances.map(chance => Math.round(100 * chance / possibilitiesCount)),
-        score: c.score,
-        matchCountLeft: c.matchCountLeft,
-    }));
 }
 
 onmessage = e => {
     const groups: types.Group[] = e.data;
     const result: GroupChance[] = [];
+
     for (const group of groups) {
+        const chances: Chance[] = group.teams.map(t => ({
+            name: t,
+            chances: group.tops.map(top => 0),
+            score: 0,
+            matchCountLeft: 0,
+        }));
+
+        calculateScoreAndMatchCountLeft(group, chances);
+
         result.push({
             tops: group.tops,
-            chances: calculate(group),
+            chances,
         });
+    }
+    postMessage(result, undefined as any);
+
+    for (let i = 0; i < groups.length; i++) {
+        calculateChances(groups[i], result[i].chances);
     }
     postMessage(result, undefined as any);
 };
