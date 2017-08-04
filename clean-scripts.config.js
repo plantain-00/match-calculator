@@ -4,6 +4,7 @@ module.exports = {
     `types-as-schema types.ts --json .`,
     `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json`,
     `tsc`,
+    `lessc index.less > index.css`,
     `cleancss index.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`,
     `webpack --display-modules`,
     `rev-static`,
@@ -12,7 +13,8 @@ module.exports = {
   ],
   lint: [
     `tslint "*.ts"`,
-    `standard "**/*.config.js"`
+    `standard "**/*.config.js"`,
+    `stylelint "/*.less"`
   ],
   test: [
     'tsc -p spec',
