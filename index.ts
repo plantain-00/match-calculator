@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Component from "vue-class-component";
-import * as JSON5 from "json5";
 import * as Ajv from "ajv";
 import { Subject } from "rxjs/Subject";
 import { indexTemplateHtml, generateMatchesTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
@@ -12,6 +11,13 @@ const validateGroups = ajv.compile(groupsSchemaJson);
 const validateTeams = ajv.compile(teamsSchemaJson);
 const worker = new Worker("worker.bundle.js");
 const resultSubject = new Subject<GroupChance[]>();
+declare const editors: {
+    main: EditorData;
+    generateMatches: EditorData;
+    generateMatchesResult: EditorData;
+};
+declare function loadEditor(value: EditorData): void;
+declare let isGenerateMatchesLoaded: boolean;
 
 worker.onmessage = e => {
     const result: GroupChance[] = e.data;
@@ -20,23 +26,23 @@ worker.onmessage = e => {
 
 const defaultGroups = `[
     {
-        teams: [
+        "teams": [
             "AAA",
             "BBB",
-            "CCC",
+            "CCC"
         ],
-        matches: [
-            { a: "AAA", b: "BBB", possibilities: [ { a: 3, b: 0 } ] },
-            { a: "AAA", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 } ] },
-            { a: "BBB", b: "CCC", possibilities: [ { a: 3, b: 0 }, { a: 1, b: 1 }, { a: 0, b: 3 } ] },
+        "matches": [
+            { "a": "AAA", "b": "BBB", "possibilities": [ { "a": 3, "b": 0 } ] },
+            { "a": "AAA", "b": "CCC", "possibilities": [ { "a": 3, "b": 0 }, { "a": 1, "b": 1 } ] },
+            { "a": "BBB", "b": "CCC", "possibilities": [ { "a": 3, "b": 0 }, { "a": 1, "b": 1 }, { "a": 0, "b": 3 } ] }
         ],
-        tops: [2],
-    },
+        "tops": [2]
+    }
 ]`;
 const defaultTeams = `[
     "AAA",
     "BBB",
-    "CCC",
+    "CCC"
 ]`;
 
 const groupsLocalStorageKey = "groups";
@@ -46,7 +52,6 @@ const teamsLocalStorageKey = "teams";
     template: indexTemplateHtml,
 })
 class Main extends Vue {
-    text = localStorage.getItem(groupsLocalStorageKey) || defaultGroups;
     result: GroupChance[] = [];
     errorMessage = "";
 
@@ -54,6 +59,10 @@ class Main extends Vue {
         resultSubject.subscribe(result => {
             this.result = result;
         });
+        editors.main = {
+            element: this.$refs.mainEditor as HTMLElement,
+            code: localStorage.getItem(groupsLocalStorageKey) || defaultGroups,
+        };
     }
 
     beforeDestroy() {
@@ -62,9 +71,10 @@ class Main extends Vue {
 
     calculate() {
         try {
-            localStorage.setItem(groupsLocalStorageKey, this.text);
+            const json = editors.main.editor!.getValue();
+            localStorage.setItem(groupsLocalStorageKey, json);
 
-            const groups: types.Group[] = JSON5.parse(this.text);
+            const groups: types.Group[] = JSON.parse(json);
             if (!validateGroups(groups)) {
                 // tslint:disable-next-line:no-console
                 console.log(validateGroups.errors);
@@ -101,33 +111,43 @@ class Main extends Vue {
     template: generateMatchesTemplateHtml,
 })
 class GenerateMatches extends Vue {
-    text = localStorage.getItem(teamsLocalStorageKey) || defaultTeams;
-    result = "";
     errorMessage = "";
+
+    mounted() {
+        editors.generateMatches = {
+            element: this.$refs.generateMatchesEditor as HTMLElement,
+            code: localStorage.getItem(teamsLocalStorageKey) || defaultTeams,
+        };
+        editors.generateMatchesResult = {
+            element: this.$refs.generateMatchesResultEditor as HTMLElement,
+            code: "",
+        };
+    }
 
     generate() {
         try {
-            localStorage.setItem(teamsLocalStorageKey, this.text);
+            const json = editors.generateMatches.editor!.getValue();
+            localStorage.setItem(teamsLocalStorageKey, json);
 
-            const teams: string[] = JSON5.parse(this.text);
+            const teams: string[] = JSON.parse(json);
             if (!validateTeams(teams)) {
                 // tslint:disable-next-line:no-console
                 console.log(validateTeams.errors);
                 this.errorMessage = validateTeams.errors![0].schemaPath + ": " + validateTeams.errors![0].message;
-                this.result = "";
+                editors.generateMatchesResult.editor!.setValue("");
                 return;
             }
-            let result = "";
+            const result: string[] = [];
             for (let i = 0; i < teams.length; i++) {
                 for (let j = i + 1; j < teams.length; j++) {
-                    result += `            { a: "${teams[i]}", b: "${teams[j]}", possibilities: [] },\n`;
+                    result.push(`            { "a": "${teams[i]}", "b": "${teams[j]}", "possibilities": [] }`);
                 }
             }
-            this.result = result;
+            editors.generateMatchesResult.editor!.setValue(`[\n${result.join(",\n")}\n]`);
             this.errorMessage = "";
         } catch (error) {
             this.errorMessage = error.message;
-            this.result = "";
+            editors.generateMatchesResult.editor!.setValue("");
         }
     }
 }
@@ -137,7 +157,7 @@ Vue.component("main-page", Main);
 Vue.component("generate-matches", GenerateMatches);
 
 @Component({
-    template: `<tab-container :data="data"></tab-container>`,
+    template: `<tab-container :data="data" @switching="switching($event)"></tab-container>`,
 })
 class App extends Vue {
     data = [
@@ -152,6 +172,18 @@ class App extends Vue {
             component: "generate-matches",
         },
     ];
+
+    switching(index: number) {
+        if (index === 1 && !isGenerateMatchesLoaded) {
+            Vue.nextTick(() => {
+                Vue.nextTick(() => {
+                    loadEditor(editors.generateMatches);
+                    loadEditor(editors.generateMatchesResult);
+                    isGenerateMatchesLoaded = true;
+                });
+            });
+        }
+    }
 }
 
 // tslint:disable-next-line:no-unused-expression
@@ -163,3 +195,12 @@ if (navigator.serviceWorker) {
         console.log("registration failed with error: " + error);
     });
 }
+
+type EditorData = {
+    element: HTMLElement;
+    code: string;
+    editor?: {
+        getValue(): string;
+        setValue(code: string): void;
+    };
+};

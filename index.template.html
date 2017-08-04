@@ -1,5 +1,5 @@
 <div class="main">
-    <textarea v-model="text" spellcheck="false"></textarea>
+    <div class="editor" ref="mainEditor"></div>
     <div v-if="errorMessage" class="error-message">{{errorMessage}}</div>
     <button @click="calculate()">Calculate</button>
     <div class="result">

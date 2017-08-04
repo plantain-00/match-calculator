@@ -6,4 +6,19 @@
 <a class="github-fork-ribbon right-bottom" href="https://github.com/plantain-00/match-calculator" title="Fork me on GitHub" target="_blank">Fork me on GitHub</a>
 <div id="container"></div>
 <script src="./<%=vendorBundleJs %>" crossOrigin="anonymous" integrity="<%=sri.vendorBundleJs %>"></script>
+<script src="./vs/loader.js"></script>
+<script>
+    require.config({ paths: {"vs":"./vs" }});
+    var editors = {};
+    var isGenerateMatchesLoaded = false;
+    function loadEditor(value) {
+        value.editor = monaco.editor.create(value.element, {
+            value: value.code,
+            language: "json",
+        });
+    }
+    require(["vs/editor/editor.main"], function() {
+        loadEditor(editors.main);
+    });
+</script>
 <%-inline.indexBundleJs %>
