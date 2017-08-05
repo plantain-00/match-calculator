@@ -76,7 +76,13 @@ function calculateChances(group: types.Group, chances: Chance[]) {
                 return -1;
             }
         }
-        return b.score - a.score;
+        if (b.score > a.score) {
+            return 1;
+        }
+        if (b.score < a.score) {
+            return -1;
+        }
+        return b.matchCountLeft - a.matchCountLeft;
     });
 }
 
@@ -100,7 +106,15 @@ function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) 
         }
     }
 
-    chances.sort((a, b) => b.score - a.score);
+    chances.sort((a, b) => {
+        if (b.score > a.score) {
+            return 1;
+        }
+        if (b.score < a.score) {
+            return -1;
+        }
+        return b.matchCountLeft - a.matchCountLeft;
+    });
 }
 
 onmessage = e => {
