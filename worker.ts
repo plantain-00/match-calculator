@@ -95,6 +95,8 @@ function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) 
             chances.find(s => s.name === match.b)!.matchCountLeft++;
         }
     }
+
+    chances.sort((a, b) => b.score - a.score);
 }
 
 onmessage = e => {
