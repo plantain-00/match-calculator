@@ -91,8 +91,12 @@ function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) 
                 chances.find(s => s.name === match.b)!.score += possibility.b;
             }
         } else if (match.possibilities.length > 1) {
-            chances.find(s => s.name === match.a)!.matchCountLeft++;
-            chances.find(s => s.name === match.b)!.matchCountLeft++;
+            const chanceA = chances.find(s => s.name === match.a)!;
+            chanceA.matchCountLeft++;
+            chanceA.score += match.possibilities.reduce((v, p) => Math.min(p.a, v), Infinity);
+            const chanceB = chances.find(s => s.name === match.b)!;
+            chanceB.matchCountLeft++;
+            chanceB.score += match.possibilities.reduce((v, p) => Math.min(p.b, v), Infinity);
         }
     }
 
