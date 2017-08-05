@@ -63,6 +63,10 @@ function calculateChances(group: types.Group, chances: Chance[]) {
         }
     }
 
+    for (const c of chances) {
+        c.chances = c.chances.map(chance => Math.round(100 * chance / possibilitiesCount));
+    }
+
     chances.sort((a, b) => {
         for (let i = 0; i < a.chances.length; i++) {
             if (b.chances[i] > a.chances[i]) {
@@ -74,10 +78,6 @@ function calculateChances(group: types.Group, chances: Chance[]) {
         }
         return b.score - a.score;
     });
-
-    for (const c of chances) {
-        c.chances = c.chances.map(chance => Math.round(100 * chance / possibilitiesCount));
-    }
 }
 
 function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) {
