@@ -74,7 +74,7 @@ class Main extends Vue {
             const json = editors.main.editor!.getValue();
             localStorage.setItem(groupsLocalStorageKey, json);
 
-            const groups: types.Group[] = JSON.parse(json);
+            const groups: types.Groups = JSON.parse(json);
             if (!validateGroups(groups)) {
                 // tslint:disable-next-line:no-console
                 console.log(validateGroups.errors);

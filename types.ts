@@ -21,7 +21,7 @@ export type Group = {
     tops: number[];
 };
 
-export type Match = {
+type Match = {
     a: string;
     b: string;
     /**
@@ -45,4 +45,4 @@ export type Match = {
  * @uniqueItems
  * @minItems 1
  */
-export type Teams = string[];
+type Teams = string[];
