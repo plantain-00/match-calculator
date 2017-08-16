@@ -48,6 +48,11 @@ const defaultTeams = `[
 const groupsLocalStorageKey = "groups";
 const teamsLocalStorageKey = "teams";
 
+function printInConsole(message: any) {
+    // tslint:disable-next-line:no-console
+    console.log(message);
+}
+
 @Component({
     template: indexTemplateHtml,
 })
@@ -76,8 +81,7 @@ class Main extends Vue {
 
             const groups: types.Groups = JSON.parse(json);
             if (!validateGroups(groups)) {
-                // tslint:disable-next-line:no-console
-                console.log(validateGroups.errors);
+                printInConsole(validateGroups.errors);
                 this.errorMessage = validateGroups.errors![0].schemaPath + ": " + validateGroups.errors![0].message;
                 this.result = [];
                 return;
@@ -131,8 +135,7 @@ class GenerateMatches extends Vue {
 
             const teams: string[] = JSON.parse(json);
             if (!validateTeams(teams)) {
-                // tslint:disable-next-line:no-console
-                console.log(validateTeams.errors);
+                printInConsole(validateTeams.errors);
                 this.errorMessage = validateTeams.errors![0].schemaPath + ": " + validateTeams.errors![0].message;
                 editors.generateMatchesResult.editor!.setValue("");
                 return;
@@ -186,13 +189,11 @@ class App extends Vue {
     }
 }
 
-// tslint:disable-next-line:no-unused-expression
 new App({ el: "#container" });
 
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register("service-worker.bundle.js").catch(error => {
-        // tslint:disable-next-line:no-console
-        console.log("registration failed with error: " + error);
+        printInConsole("registration failed with error: " + error);
     });
 }
 
