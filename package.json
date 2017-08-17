@@ -25,7 +25,7 @@
     "@types/json5": "0.0.29",
     "ajv": "5.2.2",
     "clean-css-cli": "4.1.6",
-    "clean-scripts": "1.2.1",
+    "clean-scripts": "1.2.3",
     "cpy-cli": "1.0.1",
     "file2variable-cli": "1.4.1",
     "github-fork-ribbon-css": "0.2.1",
