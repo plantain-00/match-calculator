@@ -29,8 +29,10 @@ module.exports = {
         `cpy node_modules/monaco-editor/min/vs/base/worker/workerMain.js vs/base/worker/`
       ]
     },
-    `sw-precache --config sw-precache.config.js`,
-    `uglifyjs service-worker.js -o service-worker.bundle.js`
+    [
+      `sw-precache --config sw-precache.config.js`,
+      `uglifyjs service-worker.js -o service-worker.bundle.js`
+    ]
   ],
   lint: {
     ts: `tslint "*.ts"`,
@@ -60,5 +62,13 @@ module.exports = {
     js: `standard --fix "**/*.config.js"`,
     less: `stylelint --fix "/*.less"`
   },
-  watch: `watch-then-execute "*.ts" "*.less" "*.template.html" --exclude "variables.ts" --script "npm run build"`
+  watch: {
+    schema: `watch-then-execute "types.ts" --script "clean-scripts build[0].version[0].js[0]"`,
+    template: `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json --watch`,
+    src: `tsc --watch`,
+    webpack: `webpack --watch`,
+    less: `watch-then-execute "index.less" --script "clean-scripts build[0].version[0].css"`,
+    rev: `rev-static --watch`,
+    sw: `watch-then-execute "vendor.bundle-*.js" "index.html" "worker.bundle.js" --script "clean-scripts build[1]"`
+  }
 }
