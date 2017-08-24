@@ -70,5 +70,17 @@ module.exports = {
     less: `watch-then-execute "index.less" --script "clean-scripts build[0].version[0].css"`,
     rev: `rev-static --watch`,
     sw: `watch-then-execute "vendor.bundle-*.js" "index.html" "worker.bundle.js" --script "clean-scripts build[1]"`
-  }
+  },
+  prerender: [
+    async () => {
+      const { createServer } = require('http-server')
+      const { prerender } = require('prerender-js')
+      const server = createServer()
+      server.listen(8000)
+      await prerender('http://localhost:8000', '#prerender-container', 'prerender.html', 5000)
+      server.close()
+    },
+    `clean-scripts build[0].version[1]`,
+    `clean-scripts build[1]`
+  ]
 }
