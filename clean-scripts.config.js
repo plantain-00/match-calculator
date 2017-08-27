@@ -36,16 +36,13 @@ module.exports = {
     async () => {
       const { createServer } = require('http-server')
       const puppeteer = require('puppeteer')
-      const fs = require('fs')
       const server = createServer()
       server.listen(8000)
       const browser = await puppeteer.launch()
       const page = await browser.newPage()
       await page.goto(`http://localhost:8000`)
-      await page.waitFor(5000)
+      await page.waitFor(2000)
       await page.screenshot({ path: `screenshot.png`, fullPage: true })
-      const content = await page.content()
-      fs.writeFileSync(`screenshot-src.html`, content)
       server.close()
       browser.close()
     }
@@ -99,7 +96,7 @@ module.exports = {
       const page = await browser.newPage()
       await page.waitFor(1000)
       await page.goto('http://localhost:8000')
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       const content = await page.evaluate(() => {
         const element = document.querySelector('#prerender-container')
         return element ? element.innerHTML : ''
