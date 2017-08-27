@@ -42,7 +42,7 @@ module.exports = {
       const browser = await puppeteer.launch()
       const page = await browser.newPage()
       await page.goto(`http://localhost:8000`)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       await page.screenshot({ path: `screenshot.png`, fullPage: true })
       const content = await page.content()
       fs.writeFileSync(`screenshot-src.html`, content)
@@ -66,6 +66,13 @@ module.exports = {
           reject(error)
         } else {
           if (stdout) {
+            const lines = stdout.split('\n')
+            for (const line of lines) {
+              const fs = require('fs')
+              if (line.startsWith(' M ')) {
+                console.log(fs.readFileSync(line.substring(3)))
+              }
+            }
             reject(new Error(`generated files doesn't match.`))
           } else {
             resolve()
