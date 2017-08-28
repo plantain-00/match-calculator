@@ -7,10 +7,17 @@ function calculateChances(group: types.Group, chances: Chance[]) {
      */
     const possibilitiesCount = group.matches.reduce((p, c) => p * c.possibilities.length, 1);
 
+    const initialMoment = Date.now();
     for (let i = 0; i < possibilitiesCount; i++) {
         if (i % 100000 === 0) {
-            // tslint:disable-next-line:no-console
-            console.log(`${i} / ${possibilitiesCount}`);
+            if (i > 0) {
+                const remainTime = getRelativeTime((Date.now() - initialMoment) * possibilitiesCount / i);
+                // tslint:disable-next-line:no-console
+                console.log(`${i} / ${possibilitiesCount}, will be done ${remainTime}`);
+            } else {
+                // tslint:disable-next-line:no-console
+                console.log(`${i} / ${possibilitiesCount}`);
+            }
         }
         const scores = group.teams.map(t => ({
             name: t,
@@ -143,6 +150,53 @@ onmessage = e => {
     }
     postMessage(result, undefined as any);
 };
+
+function getRelativeTime(value: number) {
+    const offset = value - Date.now();
+
+    const seconds = Math.round(Math.abs(offset) / 1000.0);
+    if (seconds < 45) {
+        return "in a few seconds";
+    }
+
+    const minutes = Math.round(seconds / 60);
+    if (minutes <= 1) {
+        return "in 1 minute";
+    }
+    if (minutes < 60) {
+        return `in ${minutes} minutes`;
+    }
+
+    const hours = Math.round(minutes / 60);
+    if (hours <= 1) {
+        return "in 1 hour";
+    }
+    if (hours < 24) {
+        return `in ${hours} hours`;
+    }
+
+    const days = Math.round(hours / 24);
+    if (days <= 1) {
+        return "in 1 day";
+    }
+    if (days < 30) {
+        return `in ${days} days`;
+    }
+
+    const months = Math.round(days / 30);
+    if (months <= 1) {
+        return "in 1 month";
+    }
+    if (months < 12) {
+        return `in ${months} months`;
+    }
+
+    const years = Math.round(days / 365);
+    if (years <= 1) {
+        return "in 1 year";
+    }
+    return `in ${years} years`;
+}
 
 type Chance = {
     name: string;
