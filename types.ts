@@ -13,13 +13,14 @@ export type Group = {
     matches: Match[];
     teams: Teams;
     /**
-     * @itemType integer
      * @itemMinimum 1
      * @uniqueItems
      * @minItems 1
      */
-    tops: number[];
+    tops: integer[];
 };
+
+type integer = number;
 
 type Match = {
     a: string;
@@ -29,14 +30,8 @@ type Match = {
      * @minItems 1
      */
     possibilities: {
-        /**
-         * @type integer
-         */
-        a: number;
-        /**
-         * @type integer
-         */
-        b: number;
+        a: integer;
+        b: integer;
     }[];
 };
 
