@@ -25,8 +25,8 @@
     "@types/jasmine": "2.5.54",
     "@types/json5": "0.0.29",
     "ajv": "5.2.2",
-    "clean-css-cli": "4.1.6",
-    "clean-scripts": "1.2.4",
+    "clean-css-cli": "4.1.9",
+    "clean-scripts": "1.2.6",
     "cpy-cli": "1.0.1",
     "file2variable-cli": "1.5.2",
     "github-fork-ribbon-css": "0.2.1",
@@ -45,7 +45,7 @@
     "rimraf": "2.6.1",
     "rxjs": "5.4.3",
     "standard": "10.0.3",
-    "stylelint": "8.0.0",
+    "stylelint": "8.1.1",
     "stylelint-config-standard": "17.0.0",
     "sw-precache": "5.2.0",
     "tab-container-component": "2.0.0",
@@ -57,6 +57,6 @@
     "vue": "2.4.2",
     "vue-class-component": "5.0.2",
     "watch-then-execute": "1.0.1",
-    "webpack": "3.5.5"
+    "webpack": "3.5.6"
   }
 }
