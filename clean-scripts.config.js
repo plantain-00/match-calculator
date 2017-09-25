@@ -16,8 +16,8 @@ module.exports = {
           ],
           css: [
             `lessc index.less > index.css`,
-            `postcss index.css -o index.postss.css`,
-            `cleancss index.postss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`
+            `postcss index.css -o index.postcss.css`,
+            `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`
           ],
           clean: `rimraf index.bundle-*.js vendor.bundle-*.js index.bundle-*.css`
         },
