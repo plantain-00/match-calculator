@@ -24,7 +24,7 @@
   "devDependencies": {
     "@types/jasmine": "2.6.0",
     "@types/json5": "0.0.29",
-    "ajv": "5.2.2",
+    "ajv": "5.2.3",
     "autoprefixer": "7.1.4",
     "clean-css-cli": "4.1.10",
     "clean-scripts": "1.2.6",
@@ -54,7 +54,7 @@
     "tslib": "1.7.1",
     "tslint": "5.7.0",
     "types-as-schema": "1.4.0",
-    "typescript": "2.5.2",
+    "typescript": "2.5.3",
     "uglify-js": "2",
     "vue": "2.4.4",
     "vue-class-component": "5.0.2",
