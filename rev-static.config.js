@@ -23,6 +23,6 @@ module.exports = {
   customNewFileName: (filePath, fileString, md5String, baseName, extensionName) => baseName + '-' + md5String + extensionName,
   fileSize: 'file-size.json',
   context: {
-    prerender: fs.readFileSync('prerender.html')
+    prerender: fs.readFileSync('prerender/index.html')
   }
 }

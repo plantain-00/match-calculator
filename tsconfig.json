@@ -20,5 +20,12 @@
         "jsx": "react",
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true
-    }
+    },
+    "files": [
+        "index.ts",
+        "variables.ts",
+        "vendor.ts",
+        "worker.ts",
+        "types.ts"
+    ]
 }
