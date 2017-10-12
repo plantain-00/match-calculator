@@ -8,5 +8,18 @@ import * as puppeteer from "puppeteer";
     await page.waitFor(2000);
     await page.screenshot({ path: `screenshots/initial.png`, fullPage: true });
 
+    await page.click("button");
+    await page.waitFor(100);
+    await page.screenshot({ path: `screenshots/calculate.png`, fullPage: true });
+
+    const tabs = await page.$$(".tab-title li");
+    await tabs[1].click();
+    await page.waitFor(100);
+    await page.screenshot({ path: `screenshots/second-tab.png`, fullPage: true });
+
+    await page.click(".generate-matches button");
+    await page.waitFor(100);
+    await page.screenshot({ path: `screenshots/generate.png`, fullPage: true });
+
     browser.close();
 })();
