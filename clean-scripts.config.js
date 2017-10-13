@@ -4,6 +4,10 @@ const { Service } = require('clean-scripts')
 
 const execAsync = util.promisify(childProcess.exec)
 
+const tsFiles = `"*.ts" "spec/**/*.ts" "screenshots/**/*.ts" "prerender/**/*.ts"`
+const jsFiles = `"*.config.js" "spec/**/*.config.js"`
+const lessFiles = `"*.less"`
+
 module.exports = {
   build: [
     {
@@ -40,10 +44,10 @@ module.exports = {
     ]
   ],
   lint: {
-    ts: `tslint "*.ts"`,
-    js: `standard "**/*.config.js"`,
-    less: `stylelint "*.less"`,
-    export: `no-unused-export "*.ts"`
+    ts: `tslint ${tsFiles}`,
+    js: `standard ${jsFiles}`,
+    less: `stylelint ${lessFiles}`,
+    export: `no-unused-export ${tsFiles} ${lessFiles}`
   },
   test: [
     'tsc -p spec',
@@ -57,9 +61,9 @@ module.exports = {
     }
   ],
   fix: {
-    ts: `tslint --fix "*.ts"`,
-    js: `standard --fix "**/*.config.js"`,
-    less: `stylelint --fix "/*.less"`
+    ts: `tslint --fix ${tsFiles}`,
+    js: `standard --fix ${jsFiles}`,
+    less: `stylelint --fix ${lessFiles}`
   },
   watch: {
     schema: `watch-then-execute "types.ts" --script "clean-scripts build[0].version[0].js[0]"`,
