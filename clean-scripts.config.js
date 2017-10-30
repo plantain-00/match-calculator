@@ -4,16 +4,22 @@ const tsFiles = `"*.ts" "spec/**/*.ts" "screenshots/**/*.ts" "prerender/**/*.ts"
 const jsFiles = `"*.config.js" "spec/**/*.config.js"`
 const lessFiles = `"*.less"`
 
+const schemaCommand = `types-as-schema types.ts --json .`
+const templateCommand = `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json`
+const tscCommand = `tsc`
+const webpackCommand = `webpack --display-modules`
+const revStaticCommand = `rev-static`
+
 module.exports = {
   build: [
     {
       version: [
         {
           js: [
-            `types-as-schema types.ts --json .`,
-            `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json`,
-            `tsc`,
-            `webpack --display-modules`
+            schemaCommand,
+            templateCommand,
+            tscCommand,
+            webpackCommand
           ],
           css: [
             `lessc index.less > index.css`,
@@ -22,7 +28,7 @@ module.exports = {
           ],
           clean: `rimraf index.bundle-*.js vendor.bundle-*.js index.bundle-*.css`
         },
-        `rev-static`
+        revStaticCommand
       ],
       copy: [
         `cpy node_modules/monaco-editor/min/vs/loader.js vs/`,
@@ -62,12 +68,12 @@ module.exports = {
     less: `stylelint --fix ${lessFiles}`
   },
   watch: {
-    schema: `watch-then-execute "types.ts" --script "clean-scripts build[0].version[0].js[0]"`,
-    template: `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json --watch`,
-    src: `tsc --watch`,
-    webpack: `webpack --watch`,
-    less: `watch-then-execute "index.less" --script "clean-scripts build[0].version[0].css"`,
-    rev: `rev-static --watch`,
+    schema: `${schemaCommand} --watch`,
+    template: `${templateCommand} --watch`,
+    src: `${tscCommand} --watch`,
+    webpack: `${webpackCommand} --watch`,
+    less: `watch-then-execute ${lessFiles} --script "clean-scripts build[0].version[0].css"`,
+    rev: `${revStaticCommand} --watch`,
     sw: `watch-then-execute "vendor.bundle-*.js" "index.html" "worker.bundle.js" --script "clean-scripts build[1]"`
   },
   screenshot: [
