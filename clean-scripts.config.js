@@ -1,4 +1,5 @@
-const { Service, execAsync } = require('clean-scripts')
+const { Service, execAsync, executeScriptAsync } = require('clean-scripts')
+const { watch } = require('watch-then-execute')
 
 const tsFiles = `"*.ts" "spec/**/*.ts" "screenshots/**/*.ts" "prerender/**/*.ts"`
 const jsFiles = `"*.config.js" "spec/**/*.config.js"`
@@ -9,6 +10,15 @@ const templateCommand = `file2variable-cli *.template.html *-schema.json -o vari
 const tscCommand = `tsc`
 const webpackCommand = `webpack --display-modules`
 const revStaticCommand = `rev-static`
+const cssCommand = [
+  `lessc index.less > index.css`,
+  `postcss index.css -o index.postcss.css`,
+  `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`
+]
+const swCommand = [
+  `sw-precache --config sw-precache.config.js`,
+  `uglifyjs service-worker.js -o service-worker.bundle.js`
+]
 
 module.exports = {
   build: [
@@ -21,11 +31,7 @@ module.exports = {
             tscCommand,
             webpackCommand
           ],
-          css: [
-            `lessc index.less > index.css`,
-            `postcss index.css -o index.postcss.css`,
-            `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`
-          ],
+          css: cssCommand,
           clean: `rimraf index.bundle-*.js vendor.bundle-*.js index.bundle-*.css`
         },
         revStaticCommand
@@ -40,10 +46,7 @@ module.exports = {
         `cpy node_modules/monaco-editor/min/vs/base/worker/workerMain.js vs/base/worker/`
       ]
     },
-    [
-      `sw-precache --config sw-precache.config.js`,
-      `uglifyjs service-worker.js -o service-worker.bundle.js`
-    ]
+    swCommand
   ],
   lint: {
     ts: `tslint ${tsFiles}`,
@@ -72,9 +75,9 @@ module.exports = {
     template: `${templateCommand} --watch`,
     src: `${tscCommand} --watch`,
     webpack: `${webpackCommand} --watch`,
-    less: `watch-then-execute ${lessFiles} --script "clean-scripts build[0].version[0].css"`,
+    less: () => watch(['*.less'], [], () => executeScriptAsync(cssCommand)),
     rev: `${revStaticCommand} --watch`,
-    sw: `watch-then-execute "vendor.bundle-*.js" "index.html" "worker.bundle.js" --script "clean-scripts build[1]"`
+    sw: () => watch(['vendor.bundle-*.js', 'index.html', 'worker.bundle.js'], [], () => executeScriptAsync(swCommand))
   },
   screenshot: [
     new Service(`http-server -p 8000`),
@@ -85,7 +88,7 @@ module.exports = {
     new Service(`http-server -p 8000`),
     `tsc -p prerender`,
     `node prerender/index.js`,
-    `clean-scripts build[0].version[1]`,
-    `clean-scripts build[1]`
+    revStaticCommand,
+    swCommand
   ]
 }

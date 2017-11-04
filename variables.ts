@@ -94,7 +94,7 @@ export const groupsSchemaJson = {
         }
     }
 };
-export const indexTemplateHtml = `<div class="main"><div class="editor" ref="mainEditor"></div><div v-if="errorMessage" class="error-message">{{errorMessage}}</div><button @click="calculate()">Calculate</button><div class="result"><table v-for="(group, i) in result"><thead><tr><th>group {{i + 1}}</th><th v-for="top in group.tops">top {{top}} chance(%)</th><th>score</th><th>match count left</th></tr></thead><tbody><tr v-for="team in group.chances"><td>{{team.name}}</td><td v-for="chance in team.chances">{{chance}}</td><td>{{team.score}}</td><td>{{team.matchCountLeft}}</td></tr></tbody></table></div></div>`;
+export const indexTemplateHtml = `<div class="main"><div class="editor" ref="mainEditor"></div><div v-if="errorMessage" class="error-message">{{errorMessage}}</div><button @click="calculate()">Calculate</button><div class="result"><table v-for="(group, i) in result" :key="i"><thead><tr><th>group {{i + 1}}</th><th v-for="(top, j) in group.tops" :key="j">top {{top}} chance(%)</th><th>score</th><th>match count left</th></tr></thead><tbody><tr v-for="(team, j) in group.chances" :key="j"><td>{{team.name}}</td><td v-for="(chance, k) in team.chances" :key="k">{{chance}}</td><td>{{team.score}}</td><td>{{team.matchCountLeft}}</td></tr></tbody></table></div></div>`;
 export const teamsSchemaJson = {
     "$ref": "#/definitions/Teams",
     "definitions": {
