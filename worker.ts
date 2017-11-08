@@ -1,3 +1,4 @@
+"use strict";
 import * as types from "./types";
 
 function calculateChances(group: types.Group, chances: Chance[]) {
