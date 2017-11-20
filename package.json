@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/plantain-00/match-calculator#readme",
   "devDependencies": {
+    "@commitlint/cli": "5.0.1",
+    "@commitlint/config-angular": "5.0.1",
     "@types/jasmine": "2.8.2",
     "@types/json5": "0.0.29",
     "@types/puppeteer": "0.13.0",
@@ -57,7 +59,7 @@
     "tslint": "5.8.0",
     "types-as-schema": "1.6.0",
     "typescript": "2.6.1",
-    "uglify-js": "2",
+    "uglify-js": "^2.8",
     "vue": "2.5.6",
     "vue-class-component": "6.1.0",
     "watch-then-execute": "1.1.1",
