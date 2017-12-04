@@ -8,12 +8,12 @@ const lessFiles = `"*.less"`
 const schemaCommand = `types-as-schema types.ts --json .`
 const templateCommand = `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json`
 const tscCommand = `tsc`
-const webpackCommand = `webpack --display-modules`
+const webpackCommand = `webpack`
 const revStaticCommand = `rev-static`
 const cssCommand = [
   `lessc index.less > index.css`,
   `postcss index.css -o index.postcss.css`,
-  `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/tab-container.min.css -o index.bundle.css`
+  `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css`
 ]
 const swCommand = [
   `sw-precache --config sw-precache.config.js`,
