@@ -153,9 +153,7 @@ onmessage = e => {
 };
 
 function getRelativeTime(value: number) {
-    const offset = value - Date.now();
-
-    const seconds = Math.round(Math.abs(offset) / 1000.0);
+    const seconds = Math.round(Math.abs(value) / 1000.0);
     if (seconds < 45) {
         return "in a few seconds";
     }
