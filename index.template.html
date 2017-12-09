@@ -1,7 +1,7 @@
 <div class="main">
     <div class="editor" ref="mainEditor"></div>
     <div v-if="errorMessage" class="error-message">{{errorMessage}}</div>
-    <button @click="calculate()">Calculate</button>
+    <button @click="calculate()">{{ progressText || "Calculate" }}</button>
     <div class="result">
         <table v-for="(group, i) in result" :key="i">
             <thead>

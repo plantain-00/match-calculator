@@ -4,13 +4,13 @@ import * as Ajv from "ajv";
 import { Subject } from "rxjs/Subject";
 import { indexTemplateHtml, generateMatchesTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
 import * as types from "./types";
-import { GroupChance } from "./worker";
+import { GroupChance, Message } from "./worker";
 
 const ajv = new Ajv();
 const validateGroups = ajv.compile(groupsSchemaJson);
 const validateTeams = ajv.compile(teamsSchemaJson);
 const worker = new Worker("worker.bundle.js");
-const resultSubject = new Subject<GroupChance[]>();
+const resultSubject = new Subject<Message>();
 declare const editors: {
     main: EditorData;
     generateMatches: EditorData;
@@ -20,8 +20,8 @@ declare function loadEditor(value: EditorData): void;
 declare let isGenerateMatchesLoaded: boolean;
 
 worker.onmessage = e => {
-    const result: GroupChance[] = e.data;
-    resultSubject.next(result);
+    const message: Message = e.data;
+    resultSubject.next(message);
 };
 
 const defaultGroups = `[
@@ -59,10 +59,20 @@ function printInConsole(message: any) {
 class Main extends Vue {
     result: GroupChance[] = [];
     errorMessage = "";
+    progressText = "";
+    private calculating = false;
 
     mounted() {
-        resultSubject.subscribe(result => {
-            this.result = result;
+        resultSubject.subscribe(message => {
+            if (message.type === "initial-result") {
+                this.result = message.result;
+            } else if (message.type === "final-result") {
+                this.calculating = false;
+                this.result = message.result;
+                this.progressText = "";
+            } else {
+                this.progressText = message.progress;
+            }
         });
         editors.main = {
             element: this.$refs.mainEditor as HTMLElement,
@@ -75,6 +85,11 @@ class Main extends Vue {
     }
 
     calculate() {
+        if (this.calculating) {
+            this.errorMessage = "calculating...";
+            return;
+        }
+
         try {
             const json = editors.main.editor!.getValue();
             localStorage.setItem(groupsLocalStorageKey, json);
@@ -104,6 +119,7 @@ class Main extends Vue {
 
             worker.postMessage(groups);
             this.errorMessage = "";
+            this.calculating = true;
         } catch (error) {
             this.errorMessage = error.message;
             this.result = [];

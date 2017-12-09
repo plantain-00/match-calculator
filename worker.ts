@@ -13,11 +13,17 @@ function calculateChances(group: types.Group, chances: Chance[]) {
         if (i % 100000 === 0) {
             if (i > 0) {
                 const remainTime = getRelativeTime((Date.now() - initialMoment) * possibilitiesCount / i);
-                // tslint:disable-next-line:no-console
-                console.log(`${i} / ${possibilitiesCount}, will be done ${remainTime}`);
+                const message: Message = {
+                    type: "progress",
+                    progress: `${i} / ${possibilitiesCount}, will be done ${remainTime}`,
+                };
+                postMessage(message, undefined as any);
             } else {
-                // tslint:disable-next-line:no-console
-                console.log(`${i} / ${possibilitiesCount}`);
+                const message: Message = {
+                    type: "progress",
+                    progress: `${i} / ${possibilitiesCount}`,
+                };
+                postMessage(message, undefined as any);
             }
         }
         const scores = group.teams.map(t => ({
@@ -144,12 +150,20 @@ onmessage = e => {
             chances,
         });
     }
-    postMessage(result, undefined as any);
+    const initialResult: Message = {
+        type: "initial-result",
+        result,
+    };
+    postMessage(initialResult, undefined as any);
 
     for (let i = 0; i < groups.length; i++) {
         calculateChances(groups[i], result[i].chances);
     }
-    postMessage(result, undefined as any);
+    const finalResult: Message = {
+        type: "final-result",
+        result,
+    };
+    postMessage(finalResult, undefined as any);
 };
 
 function getRelativeTime(value: number) {
@@ -208,3 +222,19 @@ export type GroupChance = {
     tops: number[];
     chances: Chance[];
 };
+
+export type Message =
+    {
+        type: "initial-result";
+        result: GroupChance[];
+    }
+    |
+    {
+        type: "final-result";
+        result: GroupChance[];
+    }
+    |
+    {
+        type: "progress";
+        progress: string;
+    };
