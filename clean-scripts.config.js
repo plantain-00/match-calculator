@@ -6,7 +6,8 @@ const jsFiles = `"*.config.js" "spec/**/*.config.js"`
 const lessFiles = `"*.less"`
 
 const schemaCommand = `types-as-schema types.ts --json .`
-const templateCommand = `file2variable-cli *.template.html *-schema.json -o variables.ts --html-minify --json`
+const mainTemplateCommand = `file2variable-cli index.template.html *-schema.json -o variables.ts --html-minify --json --vue --vue-type-name "Main" --vue-type-path "./index"`
+const generateMatchesTemplateCommand = `file2variable-cli generate-matches.template.html -o generate.matches.variables.ts --html-minify --vue --vue-type-name "GenerateMatches" --vue-type-path "./index"`
 const tscCommand = `tsc`
 const webpackCommand = `webpack`
 const revStaticCommand = `rev-static`
@@ -27,7 +28,8 @@ module.exports = {
         {
           js: [
             schemaCommand,
-            templateCommand,
+            mainTemplateCommand,
+            generateMatchesTemplateCommand,
             tscCommand,
             webpackCommand
           ],
@@ -67,7 +69,8 @@ module.exports = {
   },
   watch: {
     schema: `${schemaCommand} --watch`,
-    template: `${templateCommand} --watch`,
+    mainTemplateCommand: `${mainTemplateCommand} --watch`,
+    generateMatchesTemplateCommand: `${generateMatchesTemplateCommand} --watch`,
     src: `${tscCommand} --watch`,
     webpack: `${webpackCommand} --watch`,
     less: () => watch(['*.less'], [], () => executeScriptAsync(cssCommand)),

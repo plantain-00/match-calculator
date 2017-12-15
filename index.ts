@@ -2,7 +2,8 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as Ajv from "ajv";
 import { Subject } from "rxjs/Subject";
-import { indexTemplateHtml, generateMatchesTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
+import { indexTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
+import { generateMatchesTemplateHtml } from "./generate.matches.variables";
 import * as types from "./types";
 import { GroupChance, Message } from "./worker";
 
@@ -54,9 +55,9 @@ function printInConsole(message: any) {
 }
 
 @Component({
-    template: indexTemplateHtml,
+    render: indexTemplateHtml,
 })
-class Main extends Vue {
+export class Main extends Vue {
     result: GroupChance[] = [];
     errorMessage = "";
     progressText = "";
@@ -128,9 +129,9 @@ class Main extends Vue {
 }
 
 @Component({
-    template: generateMatchesTemplateHtml,
+    render: generateMatchesTemplateHtml,
 })
-class GenerateMatches extends Vue {
+export class GenerateMatches extends Vue {
     errorMessage = "";
 
     mounted() {
@@ -176,10 +177,19 @@ Vue.component("main-page", Main);
 Vue.component("generate-matches", GenerateMatches);
 
 @Component({
-    template: `<tab-container :data="data" @switching="switching($event)"></tab-container>`,
+    render(this: App, createElement) {
+        return createElement("tab-container", {
+            props: {
+                data: this.data,
+            },
+            on: {
+                switching: ($event: number) => this.switching($event),
+            },
+        });
+    },
 })
 class App extends Vue {
-    data = [
+    private data = [
         {
             isActive: true,
             title: "Main",
@@ -192,7 +202,7 @@ class App extends Vue {
         },
     ];
 
-    switching(index: number) {
+    private switching(index: number) {
         if (index === 1 && !isGenerateMatchesLoaded) {
             Vue.nextTick(() => {
                 Vue.nextTick(() => {
