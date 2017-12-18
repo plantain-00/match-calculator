@@ -2,8 +2,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import * as Ajv from "ajv";
 import { Subject } from "rxjs/Subject";
-import { indexTemplateHtml, groupsSchemaJson, teamsSchemaJson } from "./variables";
-import { generateMatchesTemplateHtml } from "./generate.matches.variables";
+import { indexTemplateHtml, indexTemplateHtmlStatic, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml, generateMatchesTemplateHtmlStatic } from "./variables";
 import * as types from "./types";
 import { GroupChance, Message } from "./worker";
 
@@ -56,6 +55,7 @@ function printInConsole(message: any) {
 
 @Component({
     render: indexTemplateHtml,
+    staticRenderFns: indexTemplateHtmlStatic,
 })
 export class Main extends Vue {
     result: GroupChance[] = [];
@@ -130,6 +130,7 @@ export class Main extends Vue {
 
 @Component({
     render: generateMatchesTemplateHtml,
+    staticRenderFns: generateMatchesTemplateHtmlStatic,
 })
 export class GenerateMatches extends Vue {
     errorMessage = "";
