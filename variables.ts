@@ -3,8 +3,7 @@
  * It is not mean to be edited by hand
  */
 // tslint:disable
-import { GenerateMatches } from "./index";
-import { Main } from "./index";
+import { GenerateMatches, Main } from "./index";
 
 // @ts-ignore
 export function generateMatchesTemplateHtml(this: GenerateMatches) {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"generate-matches"},[_c('div',{ref:"generateMatchesEditor",staticClass:"editor"}),_vm._v(" "),(_vm.errorMessage)?_c('div',{staticClass:"error-message"},[_vm._v(_vm._s(_vm.errorMessage))]):_vm._e(),_vm._v(" "),_c('button',{on:{"click":function($event){_vm.generate()}}},[_vm._v("Generate")]),_vm._v(" "),_c('div',{ref:"generateMatchesResultEditor",staticClass:"editor"})])}
