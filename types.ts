@@ -3,41 +3,41 @@
  * @uniqueItems
  * @minItems 1
  */
-export type Groups = Group[];
+export type Groups = Group[]
 
 export type Group = {
     /**
      * @uniqueItems
      * @minItems 1
      */
-    matches: Match[];
-    teams: Teams;
+  matches: Match[];
+  teams: Teams;
     /**
      * @itemMinimum 1
      * @uniqueItems
      * @minItems 1
      */
-    tops: integer[];
-};
+  tops: integer[];
+}
 
-type integer = number;
+type integer = number
 
 type Match = {
-    a: string;
-    b: string;
+  a: string;
+  b: string;
     /**
      * @uniqueItems
      * @minItems 1
      */
-    possibilities: {
-        a: integer;
-        b: integer;
-    }[];
-};
+  possibilities: {
+    a: integer;
+    b: integer;
+  }[];
+}
 
 /**
  * @entry teams-schema.json
  * @uniqueItems
  * @minItems 1
  */
-type Teams = string[];
+type Teams = string[]
