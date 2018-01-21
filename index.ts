@@ -49,7 +49,6 @@ const groupsLocalStorageKey = 'groups'
 const teamsLocalStorageKey = 'teams'
 
 function printInConsole (message: any) {
-    // tslint:disable-next-line:no-console
   console.log(message)
 }
 
