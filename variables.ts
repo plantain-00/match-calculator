@@ -3,7 +3,7 @@
  * It is not mean to be edited by hand
  */
 // tslint:disable
-import { GenerateMatches, Main } from "./index";
+import { GenerateMatches, Main } from "./index"
 
 // @ts-ignore
 export function generateMatchesTemplateHtml(this: GenerateMatches) {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"generate-matches"},[_c('div',{ref:"generateMatchesEditor",staticClass:"editor"}),_vm._v(" "),(_vm.errorMessage)?_c('div',{staticClass:"error-message"},[_vm._v(_vm._s(_vm.errorMessage))]):_vm._e(),_vm._v(" "),_c('button',{on:{"click":function($event){_vm.generate()}}},[_vm._v("Generate")]),_vm._v(" "),_c('div',{ref:"generateMatchesResultEditor",staticClass:"editor"})])}
@@ -98,7 +98,7 @@ export const groupsSchemaJson = {
             "minItems": 1
         }
     }
-};
+}
 // @ts-ignore
 export function indexTemplateHtml(this: Main) {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"main"},[_c('div',{ref:"mainEditor",staticClass:"editor"}),_vm._v(" "),(_vm.errorMessage)?_c('div',{staticClass:"error-message"},[_vm._v(_vm._s(_vm.errorMessage))]):_vm._e(),_vm._v(" "),_c('button',{on:{"click":function($event){_vm.calculate()}}},[_vm._v(_vm._s(_vm.progressText || "Calculate"))]),_vm._v(" "),_c('div',{staticClass:"result"},_vm._l((_vm.result),function(group,i){return _c('table',{key:i},[_c('thead',[_c('tr',[_c('th',[_vm._v("group "+_vm._s(i + 1))]),_vm._v(" "),_vm._l((group.tops),function(top,j){return _c('th',{key:j},[_vm._v("top "+_vm._s(top)+" chance(%)")])}),_vm._v(" "),_c('th',[_vm._v("score")]),_vm._v(" "),_c('th',[_vm._v("match count left")])],2)]),_vm._v(" "),_c('tbody',_vm._l((group.chances),function(team,j){return _c('tr',{key:j},[_c('td',[_vm._v(_vm._s(team.name))]),_vm._v(" "),_vm._l((team.chances),function(chance,k){return _c('td',{key:k},[_vm._v(_vm._s(chance))])}),_vm._v(" "),_c('td',[_vm._v(_vm._s(team.score))]),_vm._v(" "),_c('td',[_vm._v(_vm._s(team.matchCountLeft))])],2)}))])}))])}
 // @ts-ignore
@@ -115,5 +115,5 @@ export const teamsSchemaJson = {
             "minItems": 1
         }
     }
-};
+}
 // tslint:enable
