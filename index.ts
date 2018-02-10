@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import * as Ajv from 'ajv'
+import Ajv from 'ajv'
 import { Subject } from 'rxjs/Subject'
 import { indexTemplateHtml, indexTemplateHtmlStatic, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml, generateMatchesTemplateHtmlStatic } from './variables'
 import * as types from './types'
