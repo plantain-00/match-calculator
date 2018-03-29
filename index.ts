@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import 'tab-container-vue-component'
 import Ajv from 'ajv'
 import { Subject } from 'rxjs/Subject'
 import { indexTemplateHtml, indexTemplateHtmlStatic, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml, generateMatchesTemplateHtmlStatic } from './variables'
@@ -218,7 +219,7 @@ class App extends Vue {
 // tslint:disable-next-line:no-unused-expression
 new App({ el: '#container' })
 
-if (navigator.serviceWorker) {
+if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
   navigator.serviceWorker.register('service-worker.bundle.js').catch(error => {
     printInConsole('registration failed with error: ' + error)
   })
