@@ -47,7 +47,7 @@ function printInConsole (message: any) {
   console.log(message)
 }
 
-var editors: {[name: string]: EditorData} = {
+const editors: {[name: string]: EditorData} = {
   main: {
     code: localStorage.getItem(groupsLocalStorageKey) || defaultGroups
   },
@@ -57,13 +57,13 @@ var editors: {[name: string]: EditorData} = {
   generateMatchesResult: {
     code: ''
   }
-};
-var isGenerateMatchesLoaded = false;
-function loadEditor(value: EditorData) {
+}
+let isGenerateMatchesLoaded = false
+function loadEditor (value: EditorData) {
   if (value.element) {
     value.editor = monaco.editor.create(value.element, {
       value: value.code,
-      language: "json"
+      language: 'json'
     })
   }
 }
