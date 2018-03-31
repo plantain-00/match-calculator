@@ -6,19 +6,13 @@ import { Subject } from 'rxjs/Subject'
 import { indexTemplateHtml, indexTemplateHtmlStatic, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml, generateMatchesTemplateHtmlStatic } from './variables'
 import * as types from './types'
 import { GroupChance, Message } from './worker'
+import * as monaco from 'monaco-editor'
 
 const ajv = new Ajv()
 const validateGroups = ajv.compile(groupsSchemaJson)
 const validateTeams = ajv.compile(teamsSchemaJson)
 const worker = new Worker('worker.bundle.js')
 const resultSubject = new Subject<Message>()
-declare const editors: {
-  main: EditorData;
-  generateMatches: EditorData;
-  generateMatchesResult: EditorData;
-}
-declare function loadEditor (value: EditorData): void
-declare let isGenerateMatchesLoaded: boolean
 
 worker.onmessage = e => {
   const message: Message = e.data
@@ -53,6 +47,27 @@ function printInConsole (message: any) {
   console.log(message)
 }
 
+var editors: {[name: string]: EditorData} = {
+  main: {
+    code: localStorage.getItem(groupsLocalStorageKey) || defaultGroups
+  },
+  generateMatches: {
+    code: localStorage.getItem(teamsLocalStorageKey) || defaultTeams
+  },
+  generateMatchesResult: {
+    code: ''
+  }
+};
+var isGenerateMatchesLoaded = false;
+function loadEditor(value: EditorData) {
+  if (value.element) {
+    value.editor = monaco.editor.create(value.element, {
+      value: value.code,
+      language: "json"
+    })
+  }
+}
+
 @Component({
   render: indexTemplateHtml,
   staticRenderFns: indexTemplateHtmlStatic
@@ -75,10 +90,8 @@ export class Main extends Vue {
         this.progressText = message.progress
       }
     })
-    editors.main = {
-      element: this.$refs.mainEditor as HTMLElement,
-      code: localStorage.getItem(groupsLocalStorageKey) || defaultGroups
-    }
+    editors.main.element = this.$refs.mainEditor as HTMLElement
+    loadEditor(editors.main)
   }
 
   beforeDestroy () {
@@ -136,14 +149,8 @@ export class GenerateMatches extends Vue {
   errorMessage = ''
 
   mounted () {
-    editors.generateMatches = {
-      element: this.$refs.generateMatchesEditor as HTMLElement,
-      code: localStorage.getItem(teamsLocalStorageKey) || defaultTeams
-    }
-    editors.generateMatchesResult = {
-      element: this.$refs.generateMatchesResultEditor as HTMLElement,
-      code: ''
-    }
+    editors.generateMatches.element = this.$refs.generateMatchesEditor as HTMLElement
+    editors.generateMatchesResult.element = this.$refs.generateMatchesResultEditor as HTMLElement
   }
 
   generate () {
@@ -226,7 +233,7 @@ if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
 }
 
 type EditorData = {
-  element: HTMLElement;
+  element?: HTMLElement;
   code: string;
   editor?: {
     getValue (): string;

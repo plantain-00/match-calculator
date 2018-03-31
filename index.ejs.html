@@ -2,25 +2,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" data-name="vs/editor/editor.main" href="./vs/editor/editor.main.css">
 <%-inline.indexBundleCss %>
 <a class="github-fork-ribbon right-bottom" href="https://github.com/plantain-00/match-calculator" title="Fork me on GitHub" target="_blank" rel="noopener">Fork me on GitHub</a>
 <div id="prerender-container">
     <div id="container"><%-context.prerender %></div>
 </div>
 <script src="./<%=vendorBundleJs %>" crossOrigin="anonymous" integrity="<%=sri.vendorBundleJs %>"></script>
+<script>var require = { paths: { 'vs': './vs' } };</script>
 <script src="./vs/loader.js"></script>
-<script>
-    require.config({ paths: {"vs":"./vs" }});
-    var editors = {};
-    var isGenerateMatchesLoaded = false;
-    function loadEditor(value) {
-        value.editor = monaco.editor.create(value.element, {
-            value: value.code,
-            language: "json",
-        });
-    }
-    require(["vs/editor/editor.main"], function() {
-        loadEditor(editors.main);
-    });
-</script>
+<script src="./vs/editor/editor.main.nls.js"></script>
+<script src="./vs/editor/editor.main.js"></script>
 <%-inline.indexBundleJs %>

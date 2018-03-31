@@ -17,6 +17,9 @@ module.exports = [
           }
         }
       }
+    },
+    externals: {
+      'monaco-editor': 'monaco'
     }
   },
   {
