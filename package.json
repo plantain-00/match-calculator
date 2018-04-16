@@ -4,6 +4,7 @@
   "description": "A match calculator",
   "scripts": {
     "build": "clean-scripts build",
+    "dev": "export NODE_ENV=development && clean-scripts build",
     "lint": "clean-scripts lint",
     "test": "clean-scripts test",
     "fix": "clean-scripts fix",
@@ -30,7 +31,7 @@
     "ajv": "6.4.0",
     "autoprefixer": "8.2.0",
     "clean-css-cli": "4.1.11",
-    "clean-scripts": "1.7.0",
+    "clean-scripts": "1.8.0",
     "cpy-cli": "1.0.1",
     "file2variable-cli": "1.8.3",
     "github-fork-ribbon-css": "0.2.1",

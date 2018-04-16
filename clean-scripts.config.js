@@ -1,11 +1,13 @@
-const { Service, checkGitStatus, executeScriptAsync } = require('clean-scripts')
+const { Service, executeScriptAsync } = require('clean-scripts')
 const { watch } = require('watch-then-execute')
 
 const tsFiles = `"*.ts" "spec/**/*.ts" "screenshots/**/*.ts" "prerender/**/*.ts"`
 const jsFiles = `"*.config.js" "spec/**/*.config.js"`
 const lessFiles = `"*.less"`
 
-const schemaCommand = `types-as-schema types.ts --json .`
+const isDev = process.env.NODE_ENV === 'development'
+
+const schemaCommand = isDev ? undefined : `types-as-schema types.ts --json .`
 const templateCommand = `file2variable-cli --config file2variable.config.js`
 const tscCommand = `tsc`
 const webpackCommand = `webpack`
@@ -15,7 +17,7 @@ const cssCommand = [
   `postcss index.css -o index.postcss.css`,
   `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css`
 ]
-const swCommand = [
+const swCommand = isDev ? undefined : [
   `sw-precache --config sw-precache.config.js`,
   `uglifyjs service-worker.js -o service-worker.bundle.js`
 ]
@@ -36,7 +38,7 @@ module.exports = {
         },
         revStaticCommand
       ],
-      copy: [
+      copy: isDev ? undefined : [
         `cpy node_modules/monaco-editor/min/vs/loader.js vs/`,
         `cpy node_modules/monaco-editor/min/vs/language/json/jsonMode.js vs/language/json/`,
         `cpy node_modules/monaco-editor/min/vs/language/json/jsonWorker.js vs/language/json/`,
@@ -58,8 +60,7 @@ module.exports = {
   },
   test: [
     'tsc -p spec',
-    'karma start spec/karma.config.js',
-    () => checkGitStatus()
+    'karma start spec/karma.config.js'
   ],
   fix: {
     ts: `tslint --fix ${tsFiles}`,
