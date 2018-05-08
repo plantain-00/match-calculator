@@ -1,11 +1,12 @@
 'use strict'
 import * as types from './types'
 
-function calculateChances (group: types.Group, chances: Chance[]) {
-    /**
-     * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
-     * `possibilitiesCount` is 1 * 2 * 3 = 6
-     */
+// tslint:disable-next-line:cognitive-complexity
+function calculateChances(group: types.Group, chances: Chance[]) {
+  /**
+   * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
+   * `possibilitiesCount` is 1 * 2 * 3 = 6
+   */
   const possibilitiesCount = group.matches.reduce((p, c) => p * c.possibilities.length, 1)
 
   const initialMoment = Date.now()
@@ -30,16 +31,16 @@ function calculateChances (group: types.Group, chances: Chance[]) {
       name: t,
       score: 0
     }))
-        /**
-         * j | indexes
-         * --- | ---
-         * 0 | [0, 0, 0]
-         * 1 | [0, 1, 0]
-         * 2 | [0, 0, 1]
-         * 3 | [0, 1, 1]
-         * 4 | [0, 0, 2]
-         * 5 | [0, 1, 2]
-         */
+    /**
+     * j | indexes
+     * --- | ---
+     * 0 | [0, 0, 0]
+     * 1 | [0, 1, 0]
+     * 2 | [0, 0, 1]
+     * 3 | [0, 1, 1]
+     * 4 | [0, 0, 2]
+     * 5 | [0, 1, 2]
+     */
     let j = i
     for (const match of group.matches) {
       const possibility = match.possibilities[j % match.possibilities.length]
@@ -54,14 +55,14 @@ function calculateChances (group: types.Group, chances: Chance[]) {
     scores.sort((a, b) => b.score - a.score)
     for (let m = 0; m < group.tops.length; m++) {
       const top = group.tops[m]
-            /**
-             * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
-             * `drawScore` is `scores[top - 1]`(30)
-             * `drawStartIndex` is 1, `drawCount` is 3
-             * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
-             * otherwise any team `< top` will get a chance of 1
-             * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
-             */
+      /**
+       * for scores like [40, 30, 30, 30, 20, 10] and `top` is 3
+       * `drawScore` is `scores[top - 1]`(30)
+       * `drawStartIndex` is 1, `drawCount` is 3
+       * any team that equals `drawScore` will get a chance of `(top - drawStartIndex) / drawCount`
+       * otherwise any team `< top` will get a chance of 1
+       * for this example, [1, 0.66, 0.66, 0.66, 0, 0]
+       */
       const drawScore = scores[top - 1].score
       const drawStartIndex = scores.findIndex(s => s.score === drawScore)
       const drawCount = scores.filter(s => s.score === drawScore).length
@@ -100,7 +101,7 @@ function calculateChances (group: types.Group, chances: Chance[]) {
   })
 }
 
-function calculateScoreAndMatchCountLeft (group: types.Group, chances: Chance[]) {
+function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) {
   for (const match of group.matches) {
     if (match.possibilities.length === 1) {
       const possibility = match.possibilities[0]
@@ -166,7 +167,7 @@ onmessage = e => {
   postMessage(finalResult, undefined as any)
 }
 
-function getRelativeTime (value: number) {
+function getRelativeTime(value: number) {
   const seconds = Math.round(Math.abs(value) / 1000.0)
   if (seconds < 45) {
     return 'in a few seconds'
@@ -224,17 +225,17 @@ export type GroupChance = {
 }
 
 export type Message =
-    {
-      type: 'initial-result';
-      result: GroupChance[];
-    }
-    |
-    {
-      type: 'final-result';
-      result: GroupChance[];
-    }
-    |
-    {
-      type: 'progress';
-      progress: string;
-    }
+  {
+    type: 'initial-result';
+    result: GroupChance[];
+  }
+  |
+  {
+    type: 'final-result';
+    result: GroupChance[];
+  }
+  |
+  {
+    type: 'progress';
+    progress: string;
+  }
