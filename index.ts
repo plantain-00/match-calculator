@@ -43,11 +43,11 @@ const defaultTeams = `[
 const groupsLocalStorageKey = 'groups'
 const teamsLocalStorageKey = 'teams'
 
-function printInConsole (message: any) {
+function printInConsole(message: any) {
   console.log(message)
 }
 
-const editors: {[name: string]: EditorData} = {
+const editors: { [name: string]: EditorData } = {
   main: {
     code: localStorage.getItem(groupsLocalStorageKey) || defaultGroups
   },
@@ -59,7 +59,7 @@ const editors: {[name: string]: EditorData} = {
   }
 }
 let isGenerateMatchesLoaded = false
-function loadEditor (value: EditorData) {
+function loadEditor(value: EditorData) {
   if (value.element) {
     value.editor = monaco.editor.create(value.element, {
       value: value.code,
@@ -78,7 +78,7 @@ export class Main extends Vue {
   progressText = ''
   private calculating = false
 
-  mounted () {
+  mounted() {
     resultSubject.subscribe(message => {
       if (message.type === 'initial-result') {
         this.result = message.result
@@ -94,11 +94,11 @@ export class Main extends Vue {
     loadEditor(editors.main)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     resultSubject.unsubscribe()
   }
 
-  calculate () {
+  calculate() {
     if (this.calculating) {
       this.errorMessage = 'calculating...'
       return
@@ -148,12 +148,12 @@ export class Main extends Vue {
 export class GenerateMatches extends Vue {
   errorMessage = ''
 
-  mounted () {
+  mounted() {
     editors.generateMatches.element = this.$refs.generateMatchesEditor as HTMLElement
     editors.generateMatchesResult.element = this.$refs.generateMatchesResultEditor as HTMLElement
   }
 
-  generate () {
+  generate() {
     try {
       const json = editors.generateMatches.editor!.getValue()
       localStorage.setItem(teamsLocalStorageKey, json)
@@ -185,7 +185,7 @@ Vue.component('main-page', Main)
 Vue.component('generate-matches', GenerateMatches)
 
 @Component({
-  render (this: App, createElement) {
+  render(this: App, createElement) {
     return createElement('tab-container', {
       props: {
         data: this.data
@@ -210,7 +210,7 @@ class App extends Vue {
     }
   ]
 
-  private switching (index: number) {
+  private switching(index: number) {
     if (index === 1 && !isGenerateMatchesLoaded) {
       Vue.nextTick(() => {
         Vue.nextTick(() => {
@@ -236,7 +236,7 @@ type EditorData = {
   element?: HTMLElement;
   code: string;
   editor?: {
-    getValue (): string;
-    setValue (code: string): void;
+    getValue(): string;
+    setValue(code: string): void;
   };
 }
