@@ -15,7 +15,7 @@ const revStaticCommand = `rev-static`
 const cssCommand = [
   `lessc index.less > index.css`,
   `postcss index.css -o index.postcss.css`,
-  `cleancss index.postcss.css ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css -o index.bundle.css`
+  `cleancss ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css index.postcss.css -o index.bundle.css`
 ]
 const swCommand = isDev ? undefined : [
   `sw-precache --config sw-precache.config.js`,
@@ -40,8 +40,9 @@ module.exports = {
       ],
       copy: isDev ? undefined : [
         `cpy node_modules/monaco-editor/min/vs/loader.js vs/`,
-        `cpy node_modules/monaco-editor/min/vs/language/json/jsonMode.js vs/language/json/`,
-        `cpy node_modules/monaco-editor/min/vs/language/json/jsonWorker.js vs/language/json/`,
+        `cpy node_modules/monaco-editor/min/vs/language/typescript/tsMode.js vs/language/typescript/`,
+        `cpy node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js vs/language/typescript/`,
+        `cpy node_modules/monaco-editor/min/vs/language/typescript/lib/typescriptServices.js vs/language/typescript/lib`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.js vs/editor/`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.css vs/editor/`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.nls.js vs/editor/`,
