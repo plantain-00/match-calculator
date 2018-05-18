@@ -2,11 +2,12 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import 'tab-container-vue-component'
 import Ajv from 'ajv'
-import { Subject } from 'rxjs/Subject'
+import { Subject } from 'rxjs'
 import { indexTemplateHtml, indexTemplateHtmlStatic, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml, generateMatchesTemplateHtmlStatic } from './variables'
 import * as types from './types'
 import { GroupChance, Message } from './worker'
 import * as monaco from 'monaco-editor'
+import JSON5 from 'json5'
 
 const ajv = new Ajv()
 const validateGroups = ajv.compile(groupsSchemaJson)
@@ -20,24 +21,24 @@ worker.onmessage = e => {
 }
 
 const defaultGroups = `[
-    {
-        "teams": [
-            "AAA",
-            "BBB",
-            "CCC"
-        ],
-        "matches": [
-            { "a": "AAA", "b": "BBB", "possibilities": [ { "a": 3, "b": 0 } ] },
-            { "a": "AAA", "b": "CCC", "possibilities": [ { "a": 3, "b": 0 }, { "a": 1, "b": 1 } ] },
-            { "a": "BBB", "b": "CCC", "possibilities": [ { "a": 3, "b": 0 }, { "a": 1, "b": 1 }, { "a": 0, "b": 3 } ] }
-        ],
-        "tops": [2]
-    }
+  {
+    teams: [
+      'AAA',
+      'BBB',
+      'CCC',
+    ],
+    matches: [
+      { a: 'AAA', b: 'BBB', possibilities: [{ a: 3, b: 0 }] },
+      { a: 'AAA', b: 'CCC', possibilities: [{ a: 3, b: 0 }, { a: 1, b: 1 }] },
+      { a: 'BBB', b: 'CCC', possibilities: [{ a: 3, b: 0 }, { a: 1, b: 1 }, { a: 0, b: 3 }] },
+    ],
+    tops: [2],
+  },
 ]`
 const defaultTeams = `[
-    "AAA",
-    "BBB",
-    "CCC"
+  'AAA',
+  'BBB',
+  'CCC',
 ]`
 
 const groupsLocalStorageKey = 'groups'
@@ -63,7 +64,7 @@ function loadEditor(value: EditorData) {
   if (value.element) {
     value.editor = monaco.editor.create(value.element, {
       value: value.code,
-      language: 'json'
+      language: 'typescript'
     })
   }
 }
@@ -108,7 +109,7 @@ export class Main extends Vue {
       const json = editors.main.editor!.getValue()
       localStorage.setItem(groupsLocalStorageKey, json)
 
-      const groups: types.Groups = JSON.parse(json)
+      const groups: types.Groups = JSON5.parse(json)
       if (!validateGroups(groups)) {
         printInConsole(validateGroups.errors)
         this.errorMessage = validateGroups.errors![0].schemaPath + ': ' + validateGroups.errors![0].message
@@ -158,7 +159,7 @@ export class GenerateMatches extends Vue {
       const json = editors.generateMatches.editor!.getValue()
       localStorage.setItem(teamsLocalStorageKey, json)
 
-      const teams: string[] = JSON.parse(json)
+      const teams: string[] = JSON5.parse(json)
       if (!validateTeams(teams)) {
         printInConsole(validateTeams.errors)
         this.errorMessage = validateTeams.errors![0].schemaPath + ': ' + validateTeams.errors![0].message
@@ -168,10 +169,10 @@ export class GenerateMatches extends Vue {
       const result: string[] = []
       for (let i = 0; i < teams.length; i++) {
         for (let j = i + 1; j < teams.length; j++) {
-          result.push(`            { "a": "${teams[i]}", "b": "${teams[j]}", "possibilities": [] }`)
+          result.push(`  { a: '${teams[i]}', b: '${teams[j]}', possibilities: [] },`)
         }
       }
-      editors.generateMatchesResult.editor!.setValue(`[\n${result.join(',\n')}\n]`)
+      editors.generateMatchesResult.editor!.setValue(`[\n${result.join('\n')}\n]`)
       this.errorMessage = ''
     } catch (error) {
       this.errorMessage = error.message
