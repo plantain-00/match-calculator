@@ -236,8 +236,5 @@ if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
 type EditorData = {
   element?: HTMLElement;
   code: string;
-  editor?: {
-    getValue(): string;
-    setValue(code: string): void;
-  };
+  editor?: monaco.editor.IStandaloneCodeEditor;
 }
