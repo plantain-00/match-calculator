@@ -1,8 +1,10 @@
 'use strict'
 import * as types from './types'
 
+let isCalculating = false
+
 // tslint:disable-next-line:cognitive-complexity
-function calculateChances(group: types.Group, chances: Chance[]) {
+async function calculateChances(group: types.Group, chances: Chance[]) {
   /**
    * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
    * `possibilitiesCount` is 1 * 2 * 3 = 6
@@ -11,7 +13,11 @@ function calculateChances(group: types.Group, chances: Chance[]) {
 
   const initialMoment = Date.now()
   for (let i = 0; i < possibilitiesCount; i++) {
+    if (!isCalculating) {
+      return
+    }
     if (i % 100000 === 0) {
+      await new Promise(resolve => setTimeout(resolve, 0))
       if (i > 0) {
         const remainTime = getRelativeTime((Date.now() - initialMoment) * possibilitiesCount / i)
         const message: Message = {
@@ -132,14 +138,15 @@ function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) 
   })
 }
 
-onmessage = e => {
+onmessage = async e => {
+  isCalculating = !isCalculating
   const groups: types.Group[] = e.data
   const result: GroupChance[] = []
 
   for (const group of groups) {
     const chances: Chance[] = group.teams.map(t => ({
       name: t,
-      chances: group.tops.map(top => 0),
+      chances: group.tops.map(() => 0),
       score: 0,
       matchCountLeft: 0
     }))
@@ -158,13 +165,14 @@ onmessage = e => {
   postMessage(initialResult, undefined as any)
 
   for (let i = 0; i < groups.length; i++) {
-    calculateChances(groups[i], result[i].chances)
+    await calculateChances(groups[i], result[i].chances)
   }
   const finalResult: Message = {
     type: 'final-result',
     result
   }
   postMessage(finalResult, undefined as any)
+  isCalculating = false
 }
 
 function getRelativeTime(value: number) {

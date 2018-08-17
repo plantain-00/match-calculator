@@ -77,14 +77,12 @@ export class Main extends Vue {
   result: GroupChance[] = []
   errorMessage = ''
   progressText = ''
-  private calculating = false
 
   mounted() {
     resultSubject.subscribe(message => {
       if (message.type === 'initial-result') {
         this.result = message.result
       } else if (message.type === 'final-result') {
-        this.calculating = false
         this.result = message.result
         this.progressText = ''
       } else {
@@ -100,11 +98,6 @@ export class Main extends Vue {
   }
 
   calculate() {
-    if (this.calculating) {
-      this.errorMessage = 'calculating...'
-      return
-    }
-
     try {
       const json = editors.main.editor!.getValue()
       localStorage.setItem(groupsLocalStorageKey, json)
@@ -134,7 +127,6 @@ export class Main extends Vue {
 
       worker.postMessage(groups)
       this.errorMessage = ''
-      this.calculating = true
     } catch (error) {
       this.errorMessage = error.message
       this.result = []
