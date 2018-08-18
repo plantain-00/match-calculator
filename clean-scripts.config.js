@@ -48,7 +48,7 @@ module.exports = {
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.nls.js vs/editor/`,
         `cpy node_modules/monaco-editor/min/vs/base/worker/workerMain.js vs/base/worker/`,
         `cpy node_modules/monaco-editor/min/vs/basic-languages/typescript/typescript.js vs/basic-languages/typescript/`,
-        `cpy node_modules/monaco-editor/min/vs/basic-languages/typescript/javascript.js vs/basic-languages/javascript/`
+        `cpy node_modules/monaco-editor/min/vs/basic-languages/javascript/javascript.js vs/basic-languages/javascript/`
       ]
     },
     swCommand
