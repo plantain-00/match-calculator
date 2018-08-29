@@ -10,6 +10,7 @@
 </div>
 <script src="./<%=vendorBundleJs %>" crossOrigin="anonymous" integrity="<%=sri.vendorBundleJs %>"></script>
 <script>var require = { paths: { 'vs': './vs' } };</script>
+<script>console.info('build moment: <%-context.buildMoment %>')</script>
 <script src="./vs/loader.js"></script>
 <script src="./vs/editor/editor.main.nls.js"></script>
 <script src="./vs/editor/editor.main.js"></script>
