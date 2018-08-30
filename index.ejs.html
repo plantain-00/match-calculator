@@ -3,6 +3,7 @@
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" data-name="vs/editor/editor.main" href="./vs/editor/editor.main.css">
+<!--<%-context.buildMoment %>-->
 <%-inline.indexBundleCss %>
 <a class="github-fork-ribbon right-bottom" href="https://github.com/plantain-00/match-calculator" title="Fork me on GitHub" target="_blank" rel="noopener">Fork me on GitHub</a>
 <div id="prerender-container">
@@ -10,7 +11,6 @@
 </div>
 <script src="./<%=vendorBundleJs %>" crossOrigin="anonymous" integrity="<%=sri.vendorBundleJs %>"></script>
 <script>var require = { paths: { 'vs': './vs' } };</script>
-<script>console.info('build moment: <%-context.buildMoment %>')</script>
 <script src="./vs/loader.js"></script>
 <script src="./vs/editor/editor.main.nls.js"></script>
 <script src="./vs/editor/editor.main.js"></script>
