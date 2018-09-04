@@ -71,13 +71,10 @@ module.exports = {
     less: `stylelint --fix ${lessFiles}`
   },
   watch: {
-    schema: `${schemaCommand} --watch`,
     template: `${templateCommand} --watch`,
-    src: `${tscCommand} --watch`,
     webpack: `${webpackCommand} --watch`,
     less: () => watch(['*.less'], [], () => executeScriptAsync(cssCommand)),
-    rev: `${revStaticCommand} --watch`,
-    sw: () => watch(['vendor.bundle-*.js', 'index.html', 'worker.bundle.js'], [], () => executeScriptAsync(swCommand))
+    rev: `${revStaticCommand} --watch`
   },
   screenshot: [
     new Service(`http-server -p 8000`),
