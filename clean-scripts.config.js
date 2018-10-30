@@ -59,7 +59,8 @@ module.exports = {
     less: `stylelint ${lessFiles}`,
     export: `no-unused-export ${tsFiles} ${lessFiles}`,
     commit: `commitlint --from=HEAD~1`,
-    markdown: `markdownlint README.md`
+    markdown: `markdownlint README.md`,
+    typeCoverage: 'type-coverage -p . --at-least 93'
   },
   test: [
     'tsc -p spec',
