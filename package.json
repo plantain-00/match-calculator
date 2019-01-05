@@ -32,7 +32,7 @@
     "@types/json5": "0.0.30",
     "@types/puppeteer": "1.11.1",
     "ajv": "6.6.2",
-    "autoprefixer": "9.4.3",
+    "autoprefixer": "9.4.4",
     "clean-css-cli": "4.2.1",
     "clean-scripts": "1.9.2",
     "cpy-cli": "2.0.0",
@@ -51,10 +51,10 @@
     "markdownlint-cli": "0.13.0",
     "monaco-editor": "0.15.6",
     "no-unused-export": "1.7.0",
-    "postcss-cli": "6.1.0",
+    "postcss-cli": "6.1.1",
     "puppeteer": "1.11.0",
     "rev-static": "3.4.2",
-    "rimraf": "2.6.2",
+    "rimraf": "2.6.3",
     "rxjs": "6.3.3",
     "standard": "12.0.1",
     "stylelint": "9.9.0",
@@ -75,6 +75,6 @@
     "vue-template-compiler": "2.5.21",
     "watch-then-execute": "1.1.1",
     "webpack": "4.28.3",
-    "webpack-cli": "3.1.2"
+    "webpack-cli": "3.2.0"
   }
 }
