@@ -30,8 +30,8 @@
     "@commitlint/config-conventional": "7.5.0",
     "@types/jasmine": "3.3.8",
     "@types/json5": "0.0.30",
-    "@types/puppeteer": "1.11.3",
-    "ajv": "6.7.0",
+    "@types/puppeteer": "1.12.1",
+    "ajv": "6.8.1",
     "autoprefixer": "9.4.7",
     "clean-css-cli": "4.2.1",
     "clean-scripts": "1.9.2",
@@ -52,7 +52,7 @@
     "monaco-editor": "0.15.6",
     "no-unused-export": "1.7.0",
     "postcss-cli": "6.1.1",
-    "puppeteer": "1.12.1",
+    "puppeteer": "1.12.2",
     "rev-static": "3.4.2",
     "rimraf": "2.6.3",
     "rxjs": "6.4.0",
@@ -70,11 +70,11 @@
     "types-as-schema": "1.27.0",
     "typescript": "3.3.1",
     "uglify-js": "3",
-    "vue": "2.5.22",
+    "vue": "2.6.4",
     "vue-class-component": "6.3.2",
-    "vue-template-compiler": "2.5.22",
+    "vue-template-compiler": "2.6.4",
     "watch-then-execute": "1.1.1",
-    "webpack": "4.29.0",
-    "webpack-cli": "3.2.1"
+    "webpack": "4.29.3",
+    "webpack-cli": "3.2.3"
   }
 }
