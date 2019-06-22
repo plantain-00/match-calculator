@@ -52,7 +52,7 @@
     "monaco-editor": "0.17.0",
     "no-unused-export": "1.7.0",
     "postcss-cli": "6.1.2",
-    "puppeteer": "1.17.0",
+    "puppeteer": "1.18.0",
     "rev-static": "3.4.3",
     "rimraf": "2.6.3",
     "rxjs": "6.5.2",
@@ -61,9 +61,9 @@
     "stylelint-config-standard": "18.3.0",
     "sw-precache": "5.2.1",
     "tab-container-vue-component": "3.3.1",
-    "ts-loader": "6.0.2",
+    "ts-loader": "6.0.4",
     "tslib": "1.10.0",
-    "tslint": "5.17.0",
+    "tslint": "5.18.0",
     "tslint-config-standard": "8.0.1",
     "tslint-sonarts": "1.9.0",
     "type-coverage": "2.0.2",
@@ -74,7 +74,7 @@
     "vue-class-component": "7.1.0",
     "vue-template-compiler": "2.6.10",
     "watch-then-execute": "1.1.1",
-    "webpack": "4.34.0",
+    "webpack": "4.35.0",
     "webpack-cli": "3.3.4"
   }
 }
