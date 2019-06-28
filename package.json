@@ -28,7 +28,7 @@
   "dependencies": {
     "ajv": "6.10.0",
     "json5": "2.1.0",
-    "monaco-editor": "0.17.0",
+    "monaco-editor": "0.17.1",
     "rxjs": "6.5.2",
     "tab-container-vue-component": "3.3.1",
     "vue": "2.6.10",
@@ -58,7 +58,7 @@
     "markdownlint-cli": "0.17.0",
     "no-unused-export": "1.8.0-alpha.2",
     "postcss-cli": "6.1.2",
-    "puppeteer": "1.18.0",
+    "puppeteer": "1.18.1",
     "rev-static": "3.4.3",
     "rimraf": "2.6.3",
     "standard": "12.0.1",
@@ -70,13 +70,13 @@
     "tslint": "5.18.0",
     "tslint-config-standard": "8.0.1",
     "tslint-sonarts": "1.9.0",
-    "type-coverage": "2.0.2",
+    "type-coverage": "2.0.4",
     "types-as-schema": "1.29.1",
     "typescript": "3.5.2",
     "uglify-js": "3",
     "vue-template-compiler": "2.6.10",
     "watch-then-execute": "1.1.1",
     "webpack": "4.35.0",
-    "webpack-cli": "3.3.4"
+    "webpack-cli": "3.3.5"
   }
 }
