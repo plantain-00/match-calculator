@@ -3,6 +3,7 @@
  * It is not mean to be edited by hand
  */
 // tslint:disable
+/* eslint-disable */
 import { GenerateMatches, Main } from "./index"
 
 // @ts-ignore
@@ -116,4 +117,5 @@ export const teamsSchemaJson = {
         }
     }
 }
+/* eslint-enable */
 // tslint:enable
