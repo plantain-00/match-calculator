@@ -3,7 +3,6 @@ import * as types from './types'
 
 let isCalculating = false
 
-// tslint:disable-next-line:cognitive-complexity
 async function calculateChances(group: types.Group, chances: Chance[]) {
   /**
    * for matches [[{a: 3, b: 0}], [{a: 3, b: 0}, {a: 1, b: 1}], [{a: 3, b: 0}, {a: 1, b: 1}, {a: 0, b: 3}]]
@@ -220,14 +219,14 @@ function getRelativeTime(value: number) {
   return `in ${years} years`
 }
 
-type Chance = {
+interface Chance {
   name: string;
   chances: number[];
   score: number;
   matchCountLeft: number;
 }
 
-export type GroupChance = {
+export interface GroupChance {
   tops: number[];
   chances: Chance[];
 }

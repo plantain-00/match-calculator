@@ -216,7 +216,6 @@ class App extends Vue {
   }
 }
 
-// tslint:disable-next-line:no-unused-expression
 new App({ el: '#container' })
 
 if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
@@ -225,7 +224,7 @@ if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
   })
 }
 
-type EditorData = {
+interface EditorData {
   element?: HTMLElement;
   code: string;
   editor?: monaco.editor.IStandaloneCodeEditor;
