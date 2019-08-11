@@ -5,7 +5,7 @@
  */
 export type Groups = Group[]
 
-export type Group = {
+export interface Group {
   /**
    * @uniqueItems
    * @minItems 1
@@ -22,7 +22,7 @@ export type Group = {
 
 type integer = number
 
-type Match = {
+interface Match {
   a: string;
   b: string;
   /**
