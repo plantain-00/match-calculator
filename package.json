@@ -37,18 +37,18 @@
   "devDependencies": {
     "@commitlint/cli": "8.2.0",
     "@commitlint/config-conventional": "8.2.0",
-    "@types/jasmine": "3.4.4",
+    "@types/jasmine": "3.4.5",
     "@types/json5": "0.0.30",
     "@types/puppeteer": "1.20.2",
-    "@typescript-eslint/eslint-plugin": "2.5.0",
-    "@typescript-eslint/parser": "2.5.0",
-    "autoprefixer": "9.7.0",
+    "@typescript-eslint/eslint-plugin": "2.6.0",
+    "@typescript-eslint/parser": "2.6.0",
+    "autoprefixer": "9.7.1",
     "clean-css-cli": "4.3.0",
     "clean-scripts": "1.12.1",
     "cpy-cli": "2.0.0",
     "cross-env": "6.0.3",
     "eslint": "6.6.0",
-    "eslint-config-prettier": "6.4.0",
+    "eslint-config-prettier": "6.5.0",
     "eslint-plugin-plantain": "0.1.2",
     "file2variable-cli": "1.9.0",
     "github-fork-ribbon-css": "0.2.3",
@@ -78,6 +78,6 @@
     "vue-template-compiler": "2.6.10",
     "watch-then-execute": "1.1.1",
     "webpack": "4.41.2",
-    "webpack-cli": "3.3.9"
+    "webpack-cli": "3.3.10"
   }
 }
