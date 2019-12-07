@@ -42,7 +42,6 @@ module.exports = {
         `cpy node_modules/monaco-editor/min/vs/loader.js vs/`,
         `cpy node_modules/monaco-editor/min/vs/language/typescript/tsMode.js vs/language/typescript/`,
         `cpy node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js vs/language/typescript/`,
-        `cpy node_modules/monaco-editor/min/vs/language/typescript/lib/typescriptServices.js vs/language/typescript/lib`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.js vs/editor/`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.css vs/editor/`,
         `cpy node_modules/monaco-editor/min/vs/editor/editor.main.nls.js vs/editor/`,
