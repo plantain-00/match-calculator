@@ -1,16 +1,15 @@
-const { Service, executeScriptAsync } = require('clean-scripts')
-const { watch } = require('watch-then-execute')
+import { executeScriptAsync } from 'clean-scripts'
+import { watch } from 'watch-then-execute'
 
-const tsFiles = `"*.ts" "spec/**/*.ts" "screenshots/**/*.ts" "prerender/**/*.ts"`
-const jsFiles = `"*.config.js" "spec/**/*.config.js"`
+const tsFiles = `"*.ts"`
+const jsFiles = `"*.config.js"`
 const lessFiles = `"*.less"`
 
 const isDev = process.env.NODE_ENV === 'development'
 
 const schemaCommand = isDev ? undefined : `types-as-schema types.ts --json .`
-const templateCommand = `file2variable-cli --config file2variable.config.js`
-const tscCommand = `tsc`
-const webpackCommand = `webpack`
+const templateCommand = `file2variable-cli --config file2variable.config.ts`
+const webpackCommand = `webpack --config webpack.config.ts`
 const revStaticCommand = `rev-static`
 const cssCommand = [
   `lessc index.less > index.css`,
@@ -22,7 +21,7 @@ const swCommand = isDev ? undefined : [
   `uglifyjs service-worker.js -o service-worker.bundle.js`
 ]
 
-module.exports = {
+export default {
   build: [
     {
       version: [
@@ -30,7 +29,6 @@ module.exports = {
           js: [
             schemaCommand,
             templateCommand,
-            tscCommand,
             webpackCommand
           ],
           css: cssCommand,
@@ -55,15 +53,12 @@ module.exports = {
   lint: {
     ts: `eslint --ext .js,.ts,.tsx ${tsFiles} ${jsFiles}`,
     less: `stylelint ${lessFiles}`,
-    export: `no-unused-export "*.ts" ${lessFiles} --strict`,
+    export: `no-unused-export index.ts worker.ts ${lessFiles} --strict`,
     commit: `commitlint --from=HEAD~1`,
     markdown: `markdownlint README.md`,
     typeCoverage: 'type-coverage -p . --strict'
   },
-  test: [
-    'tsc -p spec',
-    'karma start spec/karma.config.js'
-  ],
+  test: [],
   fix: {
     ts: `eslint --ext .js,.ts,.tsx ${tsFiles} ${jsFiles} --fix`,
     less: `stylelint --fix ${lessFiles}`
@@ -73,17 +68,5 @@ module.exports = {
     webpack: `${webpackCommand} --watch`,
     less: () => watch(['*.less'], [], () => executeScriptAsync(cssCommand)),
     rev: `${revStaticCommand} --watch`
-  },
-  screenshot: [
-    new Service(`http-server -p 8000`),
-    `tsc -p screenshots`,
-    `node screenshots/index.js`
-  ],
-  prerender: [
-    new Service(`http-server -p 8000`),
-    `tsc -p prerender`,
-    `node prerender/index.js`,
-    revStaticCommand,
-    swCommand
-  ]
+  }
 }
