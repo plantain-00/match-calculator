@@ -54,9 +54,8 @@ export default {
     ts: `eslint --ext .js,.ts,.tsx ${tsFiles} ${jsFiles}`,
     less: `stylelint ${lessFiles}`,
     export: `no-unused-export index.ts worker.ts ${lessFiles} --strict`,
-    commit: `commitlint --from=HEAD~1`,
     markdown: `markdownlint README.md`,
-    typeCoverage: 'type-coverage -p . --strict'
+    typeCoverage: 'type-coverage -p . --strict --ignore-catch --ignore-files "variables.ts"'
   },
   test: [],
   fix: {
