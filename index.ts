@@ -15,8 +15,8 @@ const validateTeams = ajv.compile(teamsSchemaJson)
 const worker = new Worker('worker.bundle.js')
 const resultSubject = new Subject<Message>()
 
-worker.onmessage = e => {
-  const message: Message = e.data
+worker.onmessage = (e: { data: Message }) => {
+  const message = e.data
   resultSubject.next(message)
 }
 
@@ -44,7 +44,7 @@ const defaultTeams = `[
 const groupsLocalStorageKey = 'groups'
 const teamsLocalStorageKey = 'teams'
 
-function printInConsole(message: any) {
+function printInConsole(message: unknown) {
   console.log(message)
 }
 
@@ -219,7 +219,7 @@ class App extends Vue {
 new App({ el: '#container' })
 
 if (navigator.serviceWorker && !location.host.startsWith('localhost')) {
-  navigator.serviceWorker.register('service-worker.bundle.js').catch(error => {
+  navigator.serviceWorker.register('service-worker.bundle.js').catch((error: Error) => {
     printInConsole('registration failed with error: ' + error)
   })
 }

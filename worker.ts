@@ -137,9 +137,9 @@ function calculateScoreAndMatchCountLeft(group: types.Group, chances: Chance[]) 
   })
 }
 
-onmessage = async e => {
+onmessage = async (e: { data: types.Group[] }) => {
   isCalculating = !isCalculating
-  const groups: types.Group[] = e.data
+  const groups = e.data
   const result: GroupChance[] = []
 
   for (const group of groups) {
