@@ -22,7 +22,7 @@
     "url": "https://github.com/plantain-00/match-calculator/issues"
   },
   "typeCoverage": {
-    "atLeast": 97.72
+    "atLeast": 98.25
   },
   "homepage": "https://github.com/plantain-00/match-calculator#readme",
   "dependencies": {

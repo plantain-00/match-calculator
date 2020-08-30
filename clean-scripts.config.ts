@@ -54,7 +54,7 @@ export default {
     less: `stylelint ${lessFiles}`,
     export: `no-unused-export index.ts worker.ts ${lessFiles} --strict`,
     markdown: `markdownlint README.md`,
-    typeCoverage: 'type-coverage -p . --strict --ignore-catch --ignore-files "variables.ts"'
+    typeCoverage: 'type-coverage -p . --strict --ignore-files "variables.ts"'
   },
   test: [],
   fix: {

@@ -104,8 +104,10 @@ export class Main extends Vue {
 
       const groups: types.Groups = JSON5.parse(json)
       if (!validateGroups(groups)) {
-        printInConsole(validateGroups.errors)
-        this.errorMessage = validateGroups.errors![0].schemaPath + ': ' + validateGroups.errors![0].message
+        if (validateGroups.errors) {
+          printInConsole(validateGroups.errors)
+          this.errorMessage = validateGroups.errors[0].schemaPath + ': ' + validateGroups.errors[0].message
+        }
         this.result = []
         return
       }
@@ -127,8 +129,8 @@ export class Main extends Vue {
 
       worker.postMessage(groups)
       this.errorMessage = ''
-    } catch (error) {
-      this.errorMessage = error.message
+    } catch (error: unknown) {
+      this.errorMessage = error instanceof Error ? error.message : String(error)
       this.result = []
     }
   }
@@ -153,9 +155,13 @@ export class GenerateMatches extends Vue {
 
       const teams: string[] = JSON5.parse(json)
       if (!validateTeams(teams)) {
-        printInConsole(validateTeams.errors)
-        this.errorMessage = validateTeams.errors![0].schemaPath + ': ' + validateTeams.errors![0].message
-        editors.generateMatchesResult.editor!.setValue('')
+        if (validateTeams.errors) {
+          printInConsole(validateTeams.errors)
+          this.errorMessage = validateTeams.errors[0].schemaPath + ': ' + validateTeams.errors[0].message
+        }
+        if (editors.generateMatchesResult.editor) {
+          editors.generateMatchesResult.editor.setValue('')
+        }
         return
       }
       const result: string[] = []
@@ -166,8 +172,8 @@ export class GenerateMatches extends Vue {
       }
       editors.generateMatchesResult.editor!.setValue(`[\n${result.join('\n')}\n]`)
       this.errorMessage = ''
-    } catch (error) {
-      this.errorMessage = error.message
+    } catch (error: unknown) {
+      this.errorMessage = error instanceof Error ? error.message : String(error)
       editors.generateMatchesResult.editor!.setValue('')
     }
   }
