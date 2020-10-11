@@ -1,22 +1,15 @@
-export default {
+import { Configuration } from 'file2variable-cli'
+
+const config: Configuration = {
   base: 'packages/vue/src/',
   files: [
     '*.template.html',
     '*-schema.json'
   ],
   handler: (file: string) => {
-    if (file.endsWith('index.template.html')) {
+    if (file.endsWith('.template.html')) {
       return {
-        type: 'vue',
-        name: 'Main',
-        path: './index'
-      }
-    }
-    if (file.endsWith('generate-matches.template.html')) {
-      return {
-        type: 'vue',
-        name: 'GenerateMatches',
-        path: './index'
+        type: 'vue3',
       }
     }
     if (file.endsWith('.json')) {
@@ -26,3 +19,5 @@ export default {
   },
   out: 'variables.ts'
 }
+
+export default config
