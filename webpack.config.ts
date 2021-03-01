@@ -29,6 +29,11 @@ export default [
         }
       }
     },
+    plugins: [
+      new webpack.DefinePlugin({
+        __VUE_PROD_DEVTOOLS__: false,
+      }),
+    ],
     externals: {
       'monaco-editor': 'monaco'
     }
