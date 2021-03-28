@@ -163,9 +163,51 @@ export function indexTemplateHtml(_ctx, _cache) {
     ])
   ]))
 }
-export const teamsSchemaJson = {
-    "$ref": "#/definitions/Teams",
+export const matchPossibilitySchemaJson = {
+    "$ref": "#/definitions/MatchPossibilities",
     "definitions": {
+        "MatchPossibilities": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MatchPossibility"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+        },
+        "MatchPossibility": {
+            "type": "object",
+            "properties": {
+                "teams": {
+                    "$ref": "#/definitions/Teams"
+                },
+                "possibilities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "a": {
+                                "type": "integer"
+                            },
+                            "b": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "a",
+                            "b"
+                        ],
+                        "additionalProperties": false
+                    },
+                    "uniqueItems": true,
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "teams",
+                "possibilities"
+            ],
+            "additionalProperties": false
+        },
         "Teams": {
             "type": "array",
             "items": {

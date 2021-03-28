@@ -36,8 +36,26 @@ interface Match {
 }
 
 /**
- * @entry teams-schema.json
  * @uniqueItems
  * @minItems 1
  */
 type Teams = string[]
+
+type MatchPossibility = {
+  teams: Teams
+  /**
+   * @uniqueItems
+   * @minItems 1
+   */
+   possibilities: {
+    a: integer;
+    b: integer;
+  }[];
+}
+
+/**
+ * @entry match-possibility-schema.json
+ * @uniqueItems
+ * @minItems 1
+ */
+export type MatchPossibilities = MatchPossibility[]
