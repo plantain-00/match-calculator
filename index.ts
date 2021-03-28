@@ -2,7 +2,7 @@ import { createApp, defineComponent, h, nextTick } from 'vue'
 import { TabContainer } from 'tab-container-vue-component'
 import Ajv from 'ajv'
 import { Subject } from 'rxjs'
-import { indexTemplateHtml, groupsSchemaJson, teamsSchemaJson, generateMatchesTemplateHtml } from './variables'
+import { indexTemplateHtml, groupsSchemaJson, matchPossibilitySchemaJson, generateMatchesTemplateHtml } from './variables'
 import * as types from './types'
 import { GroupChance, Message } from './worker'
 import * as monaco from 'monaco-editor'
@@ -10,7 +10,7 @@ import JSON5 from 'json5'
 
 const ajv = new Ajv()
 const validateGroups = ajv.compile(groupsSchemaJson)
-const validateTeams = ajv.compile(teamsSchemaJson)
+const validateMatchPossibility = ajv.compile(matchPossibilitySchemaJson)
 const worker = new Worker('worker.bundle.js')
 const resultSubject = new Subject<Message>()
 
@@ -34,11 +34,14 @@ const defaultGroups = `[
     tops: [2],
   },
 ]`
-const defaultTeams = `[
-  'AAA',
-  'BBB',
-  'CCC',
-]`
+const defaultTeams = `{
+  teams: [
+    'AAA',
+    'BBB',
+    'CCC',
+  ],
+  possibilities: [{ a: 2, b: 0 }, { a: 1, b: 1 }, { a: 0, b: 2 }],
+}`
 
 const groupsLocalStorageKey = 'groups'
 const teamsLocalStorageKey = 'teams'
@@ -152,21 +155,23 @@ const GenerateMatches = defineComponent({
         const json = editors.generateMatches.editor!.getValue()
         localStorage.setItem(teamsLocalStorageKey, json)
   
-        const teams: string[] = JSON5.parse(json)
-        if (!validateTeams(teams)) {
-          if (validateTeams.errors) {
-            printInConsole(validateTeams.errors)
-            this.errorMessage = validateTeams.errors[0].schemaPath + ': ' + validateTeams.errors[0].message
+        const teamsInfo: types.MatchPossibilities = JSON5.parse(json)
+        if (!validateMatchPossibility(teamsInfo)) {
+          if (validateMatchPossibility.errors) {
+            printInConsole(validateMatchPossibility.errors)
+            this.errorMessage = validateMatchPossibility.errors[0].schemaPath + ': ' + validateMatchPossibility.errors[0].message
           }
           if (editors.generateMatchesResult.editor) {
             editors.generateMatchesResult.editor.setValue('')
           }
           return
         }
+        const { teams, possibilities } = teamsInfo[0]
         const result: string[] = []
         for (let i = 0; i < teams.length; i++) {
           for (let j = i + 1; j < teams.length; j++) {
-            result.push(`  { a: '${teams[i]}', b: '${teams[j]}', possibilities: [] },`)
+            const ps = possibilities.map((p => `{ a: ${p.a}, b: ${p.b} }`)).join(', ')
+            result.push(`  { a: '${teams[i]}', b: '${teams[j]}', possibilities: [${ps}] },`)
           }
         }
         editors.generateMatchesResult.editor!.setValue(`[\n${result.join('\n')}\n]`)
