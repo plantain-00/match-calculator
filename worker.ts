@@ -84,7 +84,16 @@ async function calculateChances(group: types.Group, chances: Chance[]) {
   }
 
   for (const c of chances) {
-    c.chances = c.chances.map(chance => Math.round(100 * chance / possibilitiesCount))
+    c.chances = c.chances.map(chance => {
+      const r = Math.round(100 * chance / possibilitiesCount)
+      if (r === 100 && chance !== possibilitiesCount) {
+        return 99
+      }
+      if (r === 0 && chance !== 0) {
+        return 1
+      }
+      return r
+    })
   }
 
   chances.sort((a, b) => {
