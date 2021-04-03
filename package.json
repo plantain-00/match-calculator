@@ -26,18 +26,18 @@
   },
   "homepage": "https://github.com/plantain-00/match-calculator#readme",
   "dependencies": {
-    "ajv": "7.2.3",
+    "ajv": "8.0.5",
     "json5": "2.2.0",
     "monaco-editor": "0.23.0",
-    "rxjs": "6.6.6",
+    "rxjs": "6.6.7",
     "tab-container-vue-component": "4.0.0",
-    "vue": "3.0.8"
+    "vue": "3.0.11"
   },
   "devDependencies": {
     "@types/json5": "2.2.0",
-    "@types/webpack": "5.0.0",
-    "@typescript-eslint/eslint-plugin": "4.19.0",
-    "@typescript-eslint/parser": "4.19.0",
+    "@types/webpack": "5.28.0",
+    "@typescript-eslint/eslint-plugin": "4.20.0",
+    "@typescript-eslint/parser": "4.20.0",
     "autoprefixer": "10.2.5",
     "clean-css-cli": "5.2.2",
     "clean-scripts": "1.20.1",
@@ -52,14 +52,14 @@
     "less": "4.0.0",
     "markdownlint-cli": "0.27.1",
     "no-unused-export": "1.14.1",
-    "postcss": "8.2.8",
+    "postcss": "8.2.9",
     "postcss-cli": "8.3.1",
     "rev-static": "3.6.0",
     "rimraf": "3.0.2",
     "stylelint": "13.12.0",
     "stylelint-config-standard": "21.0.0",
     "sw-precache": "5.2.1",
-    "ts-loader": "8.0.18",
+    "ts-loader": "8.1.0",
     "ts-node": "9.1.1",
     "tsconfig-plantain": "0.0.1",
     "tslib": "2.1.0",
@@ -69,7 +69,7 @@
     "uglify-js": "3",
     "vue-template-compiler": "2.6.12",
     "watch-then-execute": "1.2.0",
-    "webpack": "5.28.0",
-    "webpack-cli": "4.5.0"
+    "webpack": "5.30.0",
+    "webpack-cli": "4.6.0"
   }
 }
