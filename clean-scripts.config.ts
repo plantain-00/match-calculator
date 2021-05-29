@@ -1,7 +1,7 @@
 import { executeScriptAsync } from 'clean-scripts'
 import { watch } from 'watch-then-execute'
 
-const tsFiles = `"*.ts"`
+const tsFiles = `"*.ts" "*.tsx"`
 const lessFiles = `"*.less"`
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -15,7 +15,7 @@ const cssCommand = [
   `postcss index.css -o index.postcss.css`,
   `cleancss ./node_modules/github-fork-ribbon-css/gh-fork-ribbon.css ./node_modules/tab-container-component/dist/tab-container.min.css index.postcss.css -o index.bundle.css`
 ]
-const swCommand = isDev ? undefined : [
+const swCommand = [
   `sw-precache --config sw-precache.config.js`,
   `uglifyjs service-worker.js -o service-worker.bundle.js`
 ]
@@ -52,7 +52,7 @@ export default {
   lint: {
     ts: `eslint --ext .js,.ts,.tsx ${tsFiles}`,
     less: `stylelint ${lessFiles}`,
-    export: `no-unused-export index.ts worker.ts ${lessFiles} --strict`,
+    export: `no-unused-export index.tsx worker.ts ${lessFiles} --strict`,
     markdown: `markdownlint README.md`,
     typeCoverage: 'type-coverage -p . --strict --ignore-files "variables.ts"'
   },
